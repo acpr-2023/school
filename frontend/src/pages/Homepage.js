@@ -51,7 +51,7 @@ const Homepage = () => {
 export default Homepage;
 
 const StyledContainer = styled(Container)`
-  background-color: white;
+  background-color: #ddf5c2;
   display: flex;
   justify-content: center;
   align-items: center;

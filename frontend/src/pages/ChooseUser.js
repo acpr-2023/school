@@ -1,20 +1,11 @@
-import { AccountCircle, Group, School } from "@mui/icons-material";
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Container,
-  Grid,
-  Paper,
-} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Popup from "../components/Popup";
 import { loginUser } from "../redux/userRelated/userHandle";
+import { Backdrop, CircularProgress } from "@mui/material";
 
-const ChooseUser = ({ visitor }) => {
+const ChooseUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const password = "zxc";
@@ -24,39 +15,12 @@ const ChooseUser = ({ visitor }) => {
   );
 
   const [loader, setLoader] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
 
   const navigateHandler = (user) => {
-    if (user === "Admin") {
-      if (visitor === "guest") {
-        const email = "yogendra@12";
-        const fields = { email, password };
-        setLoader(true);
-        dispatch(loginUser(fields, user));
-      } else {
-        navigate("/Adminlogin");
-      }
-    } else if (user === "Student") {
-      if (visitor === "guest") {
-        const rollNum = "1";
-        const studentName = "Dipesh Awasthi";
-        const fields = { rollNum, studentName, password };
-        setLoader(true);
-        dispatch(loginUser(fields, user));
-      } else {
-        navigate("/Studentlogin");
-      }
-    } else if (user === "Teacher") {
-      if (visitor === "guest") {
-        const email = "tony@12";
-        const fields = { email, password };
-        setLoader(true);
-        dispatch(loginUser(fields, user));
-      } else {
-        navigate("/Teacherlogin");
-      }
-    }
+    const fields = { password };
+    setLoader(true);
+    dispatch(loginUser(fields, user));
+    navigate(`/${user.toLowerCase()}login`);
   };
 
   useEffect(() => {
@@ -70,64 +34,26 @@ const ChooseUser = ({ visitor }) => {
       }
     } else if (status === "error") {
       setLoader(false);
-      setMessage("Network Error");
-      setShowPopup(true);
     }
   }, [status, currentRole, navigate, currentUser]);
 
   return (
     <StyledContainer>
-      <Container>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={6} md={4}>
-            <div onClick={() => navigateHandler("Admin")}>
-              <StyledPaper elevation={3}>
-                <Box mb={2}>
-                  <AccountCircle fontSize="large" />
-                </Box>
-                <StyledTypography>Admin</StyledTypography>
-                Login as an administrator to access the dashboard to manage app
-                data.
-              </StyledPaper>
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <StyledPaper elevation={3}>
-              <div onClick={() => navigateHandler("Student")}>
-                <Box mb={2}>
-                  <School fontSize="large" />
-                </Box>
-                <StyledTypography>Student</StyledTypography>
-                Login as a student to explore course materials and assignments.
-              </div>
-            </StyledPaper>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <StyledPaper elevation={3}>
-              <div onClick={() => navigateHandler("Teacher")}>
-                <Box mb={2}>
-                  <Group fontSize="large" />
-                </Box>
-                <StyledTypography>Teacher</StyledTypography>
-                Login as a teacher to create courses, assignments, and track
-                student progress.
-              </div>
-            </StyledPaper>
-          </Grid>
-        </Grid>
-      </Container>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loader}
-      >
-        <CircularProgress color="inherit" />
-        Please Wait
-      </Backdrop>
-      <Popup
-        message={message}
-        setShowPopup={setShowPopup}
-        showPopup={showPopup}
-      />
+      <StyledPaper elevation={3} onClick={() => navigateHandler("Admin")}>
+        <StyledTypography>Admin</StyledTypography>
+      </StyledPaper>
+      <StyledPaper elevation={3} onClick={() => navigateHandler("Student")}>
+        <StyledTypography>Student</StyledTypography>
+      </StyledPaper>
+      <StyledPaper elevation={3} onClick={() => navigateHandler("Teacher")}>
+        <StyledTypography>Teacher</StyledTypography>
+      </StyledPaper>
+      {loader && (
+        <StyledBackdrop open={loader}>
+          <StyledCircularProgress color="inherit" />
+          Please Wait
+        </StyledBackdrop>
+      )}
     </StyledContainer>
   );
 };
@@ -135,26 +61,41 @@ const ChooseUser = ({ visitor }) => {
 export default ChooseUser;
 
 const StyledContainer = styled.div`
-  background: linear-gradient(to bottom, #411d70, #19118b);
-  height: 120vh;
+  background: white;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
   padding: 2rem;
 `;
 
-const StyledPaper = styled(Paper)`
-  padding: 20px;
+const StyledPaper = styled.div`
+  padding: 30px;
   text-align: center;
-  background-color: #1f1f38;
-  color: rgba(255, 255, 255, 0.6);
+  background-color: #1b1b1b;
+  color: #ff8c0f;
   cursor: pointer;
 
   &:hover {
-    background-color: #2c2c6c;
-    color: white;
+    background-color: white;
+    color: #ff8c0f;
   }
 `;
 
 const StyledTypography = styled.h2`
   margin-bottom: 10px;
+`;
+
+const StyledBackdrop = styled(Backdrop)`
+  && {
+    color: #fff;
+    z-index: ${({ theme }) => theme.zIndex.drawer + 1};
+  }
+`;
+
+const StyledCircularProgress = styled(CircularProgress)`
+  && {
+    color: #fff;
+  }
 `;

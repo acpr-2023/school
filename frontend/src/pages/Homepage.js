@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Students from "../assets/Students.png";
-import { LightPurpleButton } from "../components/buttonStyles";
+import { OrangeBlackButton } from "../components/buttonStyles";
 
 const Homepage = () => {
   return (
@@ -27,9 +27,9 @@ const Homepage = () => {
 
             <StyledBox>
               <StyledLink to="/choose">
-                <LightPurpleButton variant="contained" fullWidth>
+                <OrangeBlackButton variant="contained" fullWidth>
                   Login
-                </LightPurpleButton>
+                </OrangeBlackButton>
               </StyledLink>
 
               <StyledText>
@@ -51,7 +51,7 @@ const Homepage = () => {
 export default Homepage;
 
 const StyledContainer = styled(Container)`
-  background-color: #ddf5c2;
+  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +80,7 @@ const StyledBox = styled(Box)`
 
 const StyledTitle = styled.h1`
   font-size: 3rem;
-  color: #252525;
+  color: #FF8C0F
   font-weight: bold;
   text-align: center;
   padding-top: 0;

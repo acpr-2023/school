@@ -1,22 +1,26 @@
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Students from "../assets/Students.png";
 import { OrangeBlackButton } from "../components/buttonStyles";
+import backgroundImage from "../assets/bg.png"; // Import your background image
 
 const Homepage = () => {
   return (
     <StyledContainer>
-      <Grid container justifyContent="center" alignItems="center" spacing={2}>
+      <StyledGrid container spacing={2}>
         <Grid item xs={12} md={6} container justifyContent="center">
-          <img
-            src={Students}
-            alt="students"
-            style={{ width: "80%", height: "auto" }}
-          />
+          <StyledImage src={Students} alt="students" />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          container
+          justifyContent="center"
+          alignItems="center"
+        >
           <StyledPaper elevation={3}>
             <StyledTitle>
               <span style={{ fontSize: "30px" }}>Welcome to</span>
@@ -43,7 +47,7 @@ const Homepage = () => {
             </StyledBox>
           </StyledPaper>
         </Grid>
-      </Grid>
+      </StyledGrid>
     </StyledContainer>
   );
 };
@@ -51,13 +55,22 @@ const Homepage = () => {
 export default Homepage;
 
 const StyledContainer = styled(Container)`
-  background-color: white;
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   width: 100vw;
   margin: 0;
+`;
+
+const StyledGrid = styled(Grid)`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledPaper = styled.div`
@@ -75,12 +88,12 @@ const StyledBox = styled(Box)`
   justify-content: center;
   gap: 16px;
   padding: 24px;
-  width: 100%; // Ensures the buttons take full width within the Box
+  width: 100%;
 `;
 
 const StyledTitle = styled.h1`
   font-size: 3rem;
-  color: #FF8C0F
+  color: #ff8c0f;
   font-weight: bold;
   text-align: center;
   padding-top: 0;
@@ -99,5 +112,12 @@ const StyledText = styled.p`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  width: 100%; // Ensures the button takes full width
+  width: 100%;
+`;
+
+const StyledImage = styled.img`
+  width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 `;

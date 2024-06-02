@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { loginUser } from "../redux/userRelated/userHandle";
 import { Backdrop, CircularProgress } from "@mui/material";
+import backgroundImage from "../assets/bg.png"; // Import your background image
 
 const ChooseUser = () => {
   const dispatch = useDispatch();
@@ -61,30 +62,34 @@ const ChooseUser = () => {
 export default ChooseUser;
 
 const StyledContainer = styled.div`
-  background: white;
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem; // Increased gap to accommodate larger boxes
   padding: 2rem;
 `;
 
 const StyledPaper = styled.div`
-  padding: 30px;
+  padding: 50px; // Increased padding to make the boxes larger
   text-align: center;
   background-color: #1b1b1b;
-  color: #ff8c0f;
+  color: white;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s; // Added transition for smoother hover effect
 
   &:hover {
-    background-color: white;
-    color: #ff8c0f;
+    background-color: #ff8c0f;
+    color: #1b1b1b; // Different color for the text on hover
   }
 `;
 
 const StyledTypography = styled.h2`
-  margin-bottom: 10px;
+  font-size: 1.5rem; // Increased font size
+  margin-bottom: 20px; // Increased margin to match larger padding
 `;
 
 const StyledBackdrop = styled(Backdrop)`

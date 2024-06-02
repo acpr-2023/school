@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import bgpic from "../assets/designlogin.jpg";
+import bgpic from "../assets/designlogin.png";
 import Popup from "../components/Popup";
 import { OrangeBlackButton } from "../components/buttonStyles";
 import { loginUser } from "../redux/userRelated/userHandle";

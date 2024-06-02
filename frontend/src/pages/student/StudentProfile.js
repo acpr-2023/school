@@ -1,16 +1,35 @@
-import React from 'react'
-import styled from 'styled-components';
-import { Card, CardContent, Typography, Grid, Box, Avatar, Container, Paper } from '@mui/material';
-import { useSelector } from 'react-redux';
+import React from "react";
+import styled from "styled-components";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  Avatar,
+  Container,
+  Paper,
+} from "@mui/material";
+import { useSelector } from "react-redux";
 
 const StudentProfile = () => {
   const { currentUser, response, error } = useSelector((state) => state.user);
 
-  if (response) { console.log(response) }
-  else if (error) { console.log(error) }
+  if (response) {
+    console.log(response);
+  } else if (error) {
+    console.log(error);
+  }
 
-  const sclassName = currentUser.sclassName
-  const studentSchool = currentUser.school
+  const className = currentUser.sclassName
+    ? currentUser.sclassName.sclassName
+    : "Unknown Class";
+
+  // Function to format date without time
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Formats date without time
+  };
 
   return (
     <>
@@ -33,22 +52,35 @@ const StudentProfile = () => {
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="center">
-                <Typography variant="subtitle1" component="p" textAlign="center">
+                <Typography
+                  variant="subtitle1"
+                  component="p"
+                  textAlign="center"
+                >
                   Student Roll No: {currentUser.rollNum}
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="center">
-                <Typography variant="subtitle1" component="p" textAlign="center">
-                  Class: {sclassName.sclassName}
+                <Typography
+                  variant="subtitle1"
+                  component="p"
+                  textAlign="center"
+                >
+                  Class: {className}
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={12}>
               <Box display="flex" justifyContent="center">
-                <Typography variant="subtitle1" component="p" textAlign="center">
-                  School: {studentSchool.schoolName}
+                <Typography
+                  variant="subtitle1"
+                  component="p"
+                  textAlign="center"
+                >
+                  School:{" "}
+                  {currentUser.school ? currentUser.school.schoolName : ""}
                 </Typography>
               </Box>
             </Grid>
@@ -62,32 +94,34 @@ const StudentProfile = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Date of Birth:</strong> January 1, 2000
+                  <strong>Date of Birth:</strong>{" "}
+                  {formatDate(currentUser.birthdate)}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Gender:</strong> Male
+                  <strong>Gender:</strong> {currentUser.gender}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Email:</strong> john.doe@example.com
+                  <strong>Email:</strong> {currentUser.email}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Phone:</strong> (123) 456-7890
+                  <strong>Phone:</strong> {currentUser.contactNumber}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Address:</strong> 123 Main Street, City, Country
+                  <strong>Address:</strong> {currentUser.address}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" component="p">
-                  <strong>Emergency Contact:</strong> (987) 654-3210
+                  <strong>Emergency Contact:</strong>{" "}
+                  {currentUser.emergencyContactNumber}
                 </Typography>
               </Grid>
             </Grid>
@@ -95,10 +129,10 @@ const StudentProfile = () => {
         </Card>
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default StudentProfile
+export default StudentProfile;
 
 const StyledPaper = styled(Paper)`
   padding: 20px;

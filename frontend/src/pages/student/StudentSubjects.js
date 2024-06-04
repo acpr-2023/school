@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSubjectList } from '../../redux/sclassRelated/sclassHandle';
-import { BottomNavigation, BottomNavigationAction, Container, Paper, Table, TableBody, TableHead, Typography } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Container, Paper, Table, TableBody, TableHead, Typography, Box } from '@mui/material';
 import { getUserDetails } from '../../redux/userRelated/userHandle';
-import CustomBarChart from '../../components/CustomBarChart'
+import CustomBarChart from '../../components/CustomBarChart';
 
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
@@ -12,17 +12,18 @@ import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import { StyledTableCell, StyledTableRow } from '../../components/styles';
 
 const StudentSubjects = () => {
-
     const dispatch = useDispatch();
     const { subjectsList, sclassDetails } = useSelector((state) => state.sclass);
     const { userDetails, currentUser, loading, response, error } = useSelector((state) => state.user);
 
     useEffect(() => {
-        dispatch(getUserDetails(currentUser._id, "Student"));
-    }, [dispatch, currentUser._id])
+        if (currentUser && currentUser._id) {
+            dispatch(getUserDetails(currentUser._id, "Student"));
+        }
+    }, [dispatch, currentUser]);
 
-    if (response) { console.log(response) }
-    else if (error) { console.log(error) }
+    if (response) { console.log(response); }
+    else if (error) { console.log(error); }
 
     const [subjectMarks, setSubjectMarks] = useState([]);
     const [selectedSection, setSelectedSection] = useState('table');
@@ -31,16 +32,22 @@ const StudentSubjects = () => {
         if (userDetails) {
             setSubjectMarks(userDetails.examResult || []);
         }
-    }, [userDetails])
+    }, [userDetails]);
 
     useEffect(() => {
-        if (subjectMarks === []) {
+        if (subjectMarks.length === 0 && currentUser && currentUser.sclassName) {
             dispatch(getSubjectList(currentUser.sclassName._id, "ClassSubjects"));
         }
-    }, [subjectMarks, dispatch, currentUser.sclassName._id]);
+    }, [subjectMarks, dispatch, currentUser]);
 
     const handleSectionChange = (event, newSection) => {
         setSelectedSection(newSection);
+    };
+
+    const calculateAverageMarks = () => {
+        if (subjectMarks.length === 0) return 0;
+        const totalMarks = subjectMarks.reduce((total, result) => total + (result.marksObtained || 0), 0);
+        return (totalMarks / subjectMarks.length).toFixed(2);
     };
 
     const renderTableSection = () => {
@@ -71,6 +78,23 @@ const StudentSubjects = () => {
                     </TableBody>
                 </Table>
             </>
+        );
+    };
+
+    const renderAverageMarks = () => {
+        const averageMarks = calculateAverageMarks();
+        console.log('Average Marks:', averageMarks); // Debugging log
+        return (
+            <Container sx={{ marginTop: 4, padding: 2, border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
+                <Typography variant="h5" align="center" gutterBottom>
+                    Average Marks (GPA)
+                </Typography>
+                <Box display="flex" justifyContent="center">
+                    <Typography variant="h4" color="primary">
+                        {averageMarks}
+                    </Typography>
+                </Box>
+            </Container>
         );
     };
 
@@ -108,10 +132,14 @@ const StudentSubjects = () => {
                 <div>Loading...</div>
             ) : (
                 <div>
-                    {subjectMarks && Array.isArray(subjectMarks) && subjectMarks.length > 0
-                        ?
-                        (<>
-                            {selectedSection === 'table' && renderTableSection()}
+                    {subjectMarks && Array.isArray(subjectMarks) && subjectMarks.length > 0 ? (
+                        <>
+                            {selectedSection === 'table' && (
+                                <>
+                                    {renderTableSection()}
+                                    {renderAverageMarks()}
+                                </>
+                            )}
                             {selectedSection === 'chart' && renderChartSection()}
 
                             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
@@ -128,12 +156,12 @@ const StudentSubjects = () => {
                                     />
                                 </BottomNavigation>
                             </Paper>
-                        </>)
-                        :
-                        (<>
+                        </>
+                    ) : (
+                        <>
                             {renderClassDetailsSection()}
-                        </>)
-                    }
+                        </>
+                    )}
                 </div>
             )}
         </>

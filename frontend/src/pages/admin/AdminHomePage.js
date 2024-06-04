@@ -36,31 +36,35 @@ const AdminHomePage = () => {
     <Background>
       <CenteredContainer maxWidth="lg">
         <GridContainer container spacing={3}>
-          <Grid item xs={12} md={3} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <StyledPaper>
               <img src={Students} alt="Students" />
               <Title>Total Students</Title>
               <Data start={0} end={numberOfStudents} duration={2.5} />
             </StyledPaper>
           </Grid>
-          <Grid item xs={12} md={3} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <StyledPaper>
               <img src={Classes} alt="Classes" />
               <Title>Total Classes</Title>
               <Data start={0} end={numberOfClasses} duration={5} />
             </StyledPaper>
           </Grid>
-          <Grid item xs={12} md={3} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <StyledPaper>
               <img src={Teachers} alt="Teachers" />
               <Title>Total Teachers</Title>
               <Data start={0} end={numberOfTeachers} duration={2.5} />
             </StyledPaper>
           </Grid>
-          <Grid item xs={12} md={5} lg={12}>
-            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-              <SeeNotice />
-            </Paper>
+          <Grid item xs={12}>
+            <Grid container justifyContent="center" alignItems="center"> {/* Nested Grid container */}
+              <Grid item xs={8}> {/* Adjust width as needed */}
+                <NoticePaper>
+                  <SeeNotice />
+                </NoticePaper>
+              </Grid>
+            </Grid>
           </Grid>
         </GridContainer>
       </CenteredContainer>
@@ -69,8 +73,10 @@ const AdminHomePage = () => {
 };
 
 const Background = styled.div`
-  background-image: url(${backgroundImage});
-  min-height: vh;
+  // background-image: url(${backgroundImage});}
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -99,10 +105,42 @@ const StyledPaper = styled(Paper)`
     padding: 16px;
     display: flex;
     flex-direction: column;
-    height: 200px;
     justify-content: space-between;
     align-items: center;
     text-align: center;
+    height: 200px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #ff8c0f;
+    }
+
+    &:active {
+      background-color: #ff8c0f;
+    }
+  }
+`;
+
+const NoticePaper = styled(Paper)`
+  && {
+    background-color: #ded2c6;
+    padding: 6px;
+    margin-right: 200px;
+    margin-left: -190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2px;
+    height: 500px;
+    width: 150%;
+  }
+
+  /* Target the notice text element (replace with your actual element) */
+  && p {
+    margin-bottom: -80px; /* Adjust the margin value as needed */
   }
 `;
 

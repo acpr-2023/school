@@ -57,7 +57,7 @@ const StudentProfile = () => {
                   component="p"
                   textAlign="center"
                 >
-                  Student Roll No: {currentUser.rollNum}
+                  Student Number: {currentUser.rollNum}
                 </Typography>
               </Box>
             </Grid>

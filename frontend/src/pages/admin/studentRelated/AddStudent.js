@@ -25,6 +25,8 @@ const AddStudent = ({ situation }) => {
   const [gender, setGender] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [emergencyContactNumber, setEmergencyContactNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
 
   const adminID = currentUser._id;
   const role = "Student";
@@ -69,6 +71,8 @@ const AddStudent = ({ situation }) => {
     gender,
     contactNumber,
     emergencyContactNumber,
+    email, // Add email field
+    address, // Add address field
   };
 
   const submitHandler = (event) => {
@@ -112,7 +116,6 @@ const AddStudent = ({ situation }) => {
             autoComplete="name"
             required
           />
-
           {situation === "Student" && (
             <>
               <label>Class</label>
@@ -131,17 +134,15 @@ const AddStudent = ({ situation }) => {
               </select>
             </>
           )}
-
-          <label>Roll Number</label>
+          <label>Student Number</label>
           <input
             className="registerInput"
-            type="number"
-            placeholder="Enter student's Roll Number..."
+            type="text"
+            placeholder="Enter student's Student Number..."
             value={rollNum}
             onChange={(event) => setRollNum(event.target.value)}
             required
           />
-
           <label>Password</label>
           <input
             className="registerInput"
@@ -152,7 +153,6 @@ const AddStudent = ({ situation }) => {
             autoComplete="new-password"
             required
           />
-
           <label>Birthdate</label>
           <input
             className="registerInput"
@@ -162,7 +162,6 @@ const AddStudent = ({ situation }) => {
             onChange={(event) => setBirthdate(event.target.value)}
             required
           />
-
           <label>Gender</label>
           <select
             className="registerInput"
@@ -175,7 +174,6 @@ const AddStudent = ({ situation }) => {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-
           <label>Contact Number</label>
           <input
             className="registerInput"
@@ -185,7 +183,6 @@ const AddStudent = ({ situation }) => {
             onChange={(event) => setContactNumber(event.target.value)}
             required
           />
-
           <label>Emergency Contact Number</label>
           <input
             className="registerInput"
@@ -195,7 +192,24 @@ const AddStudent = ({ situation }) => {
             onChange={(event) => setEmergencyContactNumber(event.target.value)}
             required
           />
-
+          <label>Email</label> {/* Add Email field */}
+          <input
+            className="registerInput"
+            type="email"
+            placeholder="Enter student's email..."
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+          <label>Address</label> {/* Add Address field */}
+          <input
+            className="registerInput"
+            type="text"
+            placeholder="Enter student's address..."
+            value={address}
+            onChange={(event) => setAddress(event.target.value)}
+            required
+          />
           <button className="registerButton" type="submit" disabled={loader}>
             {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
           </button>

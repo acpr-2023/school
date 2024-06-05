@@ -6,7 +6,7 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   rollNum: {
-    type: Number,
+    type: String, // Changed to String to accept letters
     required: true,
   },
   password: {
@@ -41,6 +41,14 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   emergencyContactNumber: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  address: {
     type: String,
     required: true,
   },

@@ -22,12 +22,6 @@ const StudentSubjects = () => {
         }
     }, [dispatch, currentUser]);
 
-    if (response) { console.log(response); }
-    else if (error) { console.log(error); }
-
-    const [subjectMarks, setSubjectMarks] = useState([]);
-    const [selectedSection, setSelectedSection] = useState('table');
-
     useEffect(() => {
         if (userDetails) {
             setSubjectMarks(userDetails.examResult || []);
@@ -39,6 +33,9 @@ const StudentSubjects = () => {
             dispatch(getSubjectList(currentUser.sclassName._id, "ClassSubjects"));
         }
     }, [subjectMarks, dispatch, currentUser]);
+
+    const [subjectMarks, setSubjectMarks] = useState([]);
+    const [selectedSection, setSelectedSection] = useState('table');
 
     const handleSectionChange = (event, newSection) => {
         setSelectedSection(newSection);
@@ -65,7 +62,7 @@ const StudentSubjects = () => {
                     </TableHead>
                     <TableBody>
                         {subjectMarks.map((result, index) => {
-                            if (!result.subName || !result.marksObtained) {
+                            if (!result.subName || result.marksObtained === undefined) {
                                 return null;
                             }
                             return (

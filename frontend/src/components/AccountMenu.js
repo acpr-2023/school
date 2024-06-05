@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Tooltip } from '@mui/material';
-import { Settings, Logout } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material'; // Ensure Settings is not imported
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -14,9 +14,11 @@ const AccountMenu = () => {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+    
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     return (
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -40,7 +42,6 @@ const AccountMenu = () => {
                 id="account-menu"
                 open={open}
                 onClose={handleClose}
-                onClick={handleClose}
                 PaperProps={{
                     elevation: 0,
                     sx: styles.styledPaper,
@@ -48,24 +49,18 @@ const AccountMenu = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem>
+                <MenuItem onClick={handleClose}>
                     <Avatar />
-                    <Link to={`/${currentRole}/profile`}>
+                    <Link to={`/${currentRole}/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         Profile
                     </Link>
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem>
-                    <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    <Link to="/logout">
+                    <Link to="/logout" style={{ textDecoration: 'none', color: 'inherit' }}>
                         Logout
                     </Link>
                 </MenuItem>
@@ -74,7 +69,7 @@ const AccountMenu = () => {
     );
 }
 
-export default AccountMenu
+export default AccountMenu;
 
 const styles = {
     styledPaper: {

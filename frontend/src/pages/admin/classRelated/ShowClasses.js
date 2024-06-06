@@ -187,7 +187,7 @@ const ShowClasses = () => {
             </>
           )}
         </>
-      }
+      )}
       <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
 
     </>

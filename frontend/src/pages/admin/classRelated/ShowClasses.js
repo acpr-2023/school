@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconButton, Box, Menu, MenuItem, ListItemIcon, Tooltip } from '@mui/material';
+import { IconButton, Box, Menu, MenuItem, ListItemIcon, Tooltip, Typography, Avatar, Paper } from '@mui/material';
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { deleteUser } from '../../../redux/userRelated/userHandle';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import { BlueButton, GreenButton } from '../../../components/buttonStyles';
 import TableTemplate from '../../../components/TableTemplate';
-
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -41,22 +40,7 @@ const ShowClasses = () => {
     console.log(address);
     setMessage("Sorry the delete function has been disabled for now.")
     setShowPopup(true)
-    // dispatch(deleteUser(deleteID, address))
-    //   .then(() => {
-    //     dispatch(getAllSclasses(adminID, "Sclass"));
-    //   })
   }
-
-  const sclassColumns = [
-    { id: 'name', label: 'Class Name', minWidth: 170 },
-  ]
-
-  const sclassRows = sclassesList && sclassesList.length > 0 && sclassesList.map((sclass) => {
-    return {
-      name: sclass.sclassName,
-      id: sclass._id,
-    };
-  })
 
   const SclassButtonHaver = ({ row }) => {
     const actions = [
@@ -68,8 +52,7 @@ const ShowClasses = () => {
         <IconButton onClick={() => deleteHandler(row.id, "Sclass")} color="secondary">
           <DeleteIcon color="error" />
         </IconButton>
-        <BlueButton variant="contained"
-          onClick={() => navigate("/Admin/classes/class/" + row.id)}>
+        <BlueButton variant="contained" onClick={() => navigate("/Admin/classes/class/" + row.id)}>
           View
         </BlueButton>
         <ActionMenu actions={actions} />
@@ -92,17 +75,19 @@ const ShowClasses = () => {
       <>
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
           <Tooltip title="Add Students & Subjects">
-            <IconButton
-              onClick={handleClick}
-              size="small"
-              sx={{ ml: 2 }}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              <h5>Add</h5>
-              <SpeedDialIcon />
-            </IconButton>
+            <Box border={1} borderRadius={10} p={1}> {/* Added Box with border and borderRadius */}
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <h5>Add</h5>
+                <SpeedDialIcon />
+              </IconButton>
+            </Box>
           </Tooltip>
         </Box>
         <Menu
@@ -157,14 +142,23 @@ const ShowClasses = () => {
             :
             <>
               {Array.isArray(sclassesList) && sclassesList.length > 0 &&
-                <TableTemplate buttonHaver={SclassButtonHaver} columns={sclassColumns} rows={sclassRows} />
+                <ClassContainer>
+                  {sclassesList.map((sclass) => (
+                    <ClassBox key={sclass._id}>
+                      <AvatarContainer>
+                        <Avatar src={sclass.profilePhoto} />
+                      </AvatarContainer>
+                      <Typography variant="h5">{sclass.sclassName}</Typography>
+                      <SclassButtonHaver row={{ id: sclass._id }} />
+                    </ClassBox>
+                  ))}
+                </ClassContainer>
               }
               <SpeedDialTemplate actions={actions} />
             </>}
         </>
       }
       <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-
     </>
   );
 };
@@ -177,22 +171,12 @@ const styles = {
     filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
     mt: 1.5,
     '& .MuiAvatar-root': {
-      width: 32,
-      height: 32,
-      ml: -0.5,
-      mr: 1,
+      width: 100,
+      height: 100,
+      marginBottom: '1rem',
     },
-    '&:before': {
-      content: '""',
-      display: 'block',
-      position: 'absolute',
-      top: 0,
-      right: 14,
-      width: 10,
-      height: 10,
-      bgcolor: 'background.paper',
-      transform: 'translateY(-50%) rotate(45deg)',
-      zIndex: 0,
+    '& .MuiButtonBase-root': {
+      marginBottom: '0.5rem',
     },
   }
 }
@@ -202,4 +186,42 @@ const ButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+`;
+
+const ClassContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 40px;
+`;
+const ClassBox = styled(Paper)`
+  background-color: rgba(255, 140, 15, 0.7); /* Lower opacity */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 350px; /* Increased width */
+  text-align: center;
+  transition: transform 0.3s, background-color 0.3s; /* Added background-color transition */
+
+  &:hover {
+    transform: translateY(-5px);
+    background-color: rgba(255, 140, 15, 0.6); /* Change background color on hover with lower opacity */
+  }
+
+  & h5 {
+    font-weight: bold; /* Bold text */
+  }
+`;
+
+const AvatarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem; /* Increase bottom margin */
+  gap: 1rem; /* Added gap between avatar and text */
+
+  & .MuiAvatar-root {
+    width: 120px; /* Increase width */
+    height: 120px; /* Increase height */
+  }
 `;

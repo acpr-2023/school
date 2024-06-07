@@ -18,7 +18,6 @@ import {
   calculateSubjectAttendancePercentage,
   groupAttendanceBySubject,
 } from "../../components/attendanceCalculator";
-import CustomPieChart from "../../components/CustomPieChart";
 import { StyledTableCell, StyledTableRow } from "../../components/styles";
 
 const TeacherViewStudent = () => {
@@ -36,7 +35,7 @@ const TeacherViewStudent = () => {
 
   const [sclassName, setSclassName] = useState("");
   const [studentSchool, setStudentSchool] = useState("");
-  const [subjectMarks, setSubjectMarks] = useState("");
+  const [subjectMarks, setSubjectMarks] = useState([]);
   const [subjectAttendance, setSubjectAttendance] = useState([]);
 
   useEffect(() => {
@@ -47,7 +46,7 @@ const TeacherViewStudent = () => {
     if (userDetails) {
       setSclassName(userDetails.sclassName || "");
       setStudentSchool(userDetails.school || "");
-      setSubjectMarks(userDetails.examResult || "");
+      setSubjectMarks(userDetails.examResult || []);
       setSubjectAttendance(userDetails.attendance || []);
     }
   }, [userDetails]);
@@ -70,31 +69,32 @@ const TeacherViewStudent = () => {
           <Paper
             elevation={3}
             style={{
-              margin: "50px",
-              padding: "50px",
-              textAlign: "left ",
+              margin: "20px 0",
+              padding: "30px",
               backgroundColor: "#ded2c6",
             }}
           >
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="h5">Name: {userDetails.name}</Typography>
-                <Typography variant="h5">
+                <Typography variant="h5" color="black" padding="10px">
+                  Name: {userDetails.name}
+                </Typography>
+                <Typography variant="h5" color="black" padding="10px">
                   Student Number: {userDetails.rollNum}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="h5">
+                <Typography variant="h5" color="black" padding="10px">
                   Class: {sclassName.sclassName}
                 </Typography>
-                <Typography variant="h5">
+                <Typography variant="h5" color="black" padding="10px">
                   School: {studentSchool.schoolName}
                 </Typography>
               </Grid>
             </Grid>
           </Paper>
 
-          <Box mt={2} textAlign="center">
+          <Box textAlign="center" my={2}>
             <Button
               variant="contained"
               onClick={() =>
@@ -136,115 +136,101 @@ const TeacherViewStudent = () => {
           </Box>
 
           <Box mt={2}>
-            <Typography variant="h5">Attendance Sheet</Typography>
+            <Typography variant="h5" color="#6b4c35">
+              Attendance Sheet
+            </Typography>
             {subjectAttendance &&
               Array.isArray(subjectAttendance) &&
               subjectAttendance.length > 0 && (
-                <>
-                  <Table>
-                    <TableHead>
-                      <StyledTableRow>
-                        <StyledTableCell>Subject</StyledTableCell>
-                        <StyledTableCell>Present</StyledTableCell>
-                        <StyledTableCell>Total Sessions</StyledTableCell>
-                        <StyledTableCell>Attendance Percentage</StyledTableCell>
-                        <StyledTableCell>Date</StyledTableCell>
-                        <StyledTableCell>Status</StyledTableCell>
-                      </StyledTableRow>
-                    </TableHead>
+                <Table>
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Subject</StyledTableCell>
+                      <StyledTableCell>Present</StyledTableCell>
+                      <StyledTableCell>Total Sessions</StyledTableCell>
+                      <StyledTableCell>Attendance Percentage</StyledTableCell>
+                      <StyledTableCell>Date</StyledTableCell>
+                      <StyledTableCell>Status</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
 
-                    <TableBody>
-                      {Object.entries(
-                        groupAttendanceBySubject(subjectAttendance)
-                      ).map(
-                        (
-                          [subName, { present, allData, subId, sessions }],
-                          index
-                        ) => {
-                          if (subName === teachSubject) {
-                            const subjectAttendancePercentage =
-                              calculateSubjectAttendancePercentage(
-                                present,
-                                sessions
-                              );
+                  <TableBody>
+                    {Object.entries(
+                      groupAttendanceBySubject(subjectAttendance)
+                    ).map(
+                      (
+                        [subName, { present, allData, subId, sessions }],
+                        index
+                      ) => {
+                        if (subName === teachSubject) {
+                          const subjectAttendancePercentage =
+                            calculateSubjectAttendancePercentage(
+                              present,
+                              sessions
+                            );
 
-                            return allData.map((data, dataIndex) => {
-                              const date = new Date(data.date);
-                              const dateString =
-                                date.toString() !== "Invalid Date"
-                                  ? date.toISOString().substring(0, 10)
-                                  : "Invalid Date";
-                              return (
-                                <StyledTableRow key={`${index}-${dataIndex}`}>
-                                  <StyledTableCell>{subName}</StyledTableCell>
-                                  <StyledTableCell>{present}</StyledTableCell>
-                                  <StyledTableCell>{sessions}</StyledTableCell>
-                                  <StyledTableCell>
-                                    {subjectAttendancePercentage}%
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {dateString}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {data.status}
-                                  </StyledTableCell>
-                                </StyledTableRow>
-                              );
-                            });
-                          } else {
-                            return null;
-                          }
+                          return allData.map((data, dataIndex) => {
+                            const date = new Date(data.date);
+                            const dateString =
+                              date.toString() !== "Invalid Date"
+                                ? date.toISOString().substring(0, 10)
+                                : "Invalid Date";
+                            return (
+                              <StyledTableRow key={`${index}-${dataIndex}`}>
+                                <StyledTableCell>{subName}</StyledTableCell>
+                                <StyledTableCell>{present}</StyledTableCell>
+                                <StyledTableCell>{sessions}</StyledTableCell>
+                                <StyledTableCell>
+                                  {subjectAttendancePercentage}%
+                                </StyledTableCell>
+                                <StyledTableCell>{dateString}</StyledTableCell>
+                                <StyledTableCell>{data.status}</StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          });
+                        } else {
+                          return null;
                         }
-                      )}
-                    </TableBody>
-                  </Table>
-                  <Typography variant="h6">
-                    Overall Attendance Percentage:{" "}
-                    {overallAttendancePercentage.toFixed(2)}%
-                  </Typography>
-                </>
+                      }
+                    )}
+                  </TableBody>
+                </Table>
               )}
           </Box>
 
           <Box mt={2}>
-            <Typography variant="h5">Subject Marks</Typography>
+            <Typography variant="h5" color="#6b4c35">
+              Subject Marks
+            </Typography>
             {subjectMarks &&
               Array.isArray(subjectMarks) &&
               subjectMarks.length > 0 && (
-                <>
-                  {subjectMarks.map((result, index) => {
-                    if (result.subName.subName === teachSubject) {
-                      return (
-                        <Table key={index}>
-                          <TableHead>
-                            <StyledTableRow>
-                              <StyledTableCell>Subject</StyledTableCell>
-                              <StyledTableCell>Marks</StyledTableCell>
-                            </StyledTableRow>
-                          </TableHead>
-                          <TableBody>
-                            <StyledTableRow>
-                              <StyledTableCell>
-                                {result.subName.subName}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {result.marksObtained}
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          </TableBody>
-                        </Table>
-                      );
-                    } else if (!result.subName || !result.marksObtained) {
+                <Table>
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Subject</StyledTableCell>
+                      <StyledTableCell>Marks</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
+                  <TableBody>
+                    {subjectMarks.map((result, index) => {
+                      if (result.subName.subName === teachSubject) {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell>
+                              {result.subName.subName}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              {result.marksObtained}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      }
                       return null;
-                    }
-                    return null;
-                  })}
-                </>
+                    })}
+                  </TableBody>
+                </Table>
               )}
-          </Box>
-
-          <Box mt={2}>
-            <CustomPieChart data={chartData} />
           </Box>
         </Container>
       )}

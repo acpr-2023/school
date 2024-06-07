@@ -69,7 +69,12 @@ const TeacherViewStudent = () => {
         <Container>
           <Paper
             elevation={3}
-            style={{ margin: "50px", padding: "50px", textAlign: "left " }}
+            style={{
+              margin: "50px",
+              padding: "50px",
+              textAlign: "left ",
+              backgroundColor: "#ded2c6",
+            }}
           >
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -97,7 +102,15 @@ const TeacherViewStudent = () => {
                   `/Teacher/class/student/attendance/${studentID}/${teachSubjectID}`
                 )
               }
-              style={{ margin: "0 10px" }}
+              sx={{
+                margin: "0 10px",
+                backgroundColor: "#ded2c6",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#ff8c0f",
+                },
+              }}
             >
               Add Attendance
             </Button>
@@ -108,7 +121,15 @@ const TeacherViewStudent = () => {
                   `/Teacher/class/student/marks/${studentID}/${teachSubjectID}`
                 )
               }
-              style={{ margin: "0 10px" }}
+              sx={{
+                margin: "0 10px",
+                backgroundColor: "#ded2c6",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#ff8c0f",
+                },
+              }}
             >
               Add Marks
             </Button>

@@ -23,6 +23,10 @@ const studentSchema = new mongoose.Schema({
     ref: "admin",
     required: true,
   },
+  schoolYear: {
+    type: String,
+    required: true,
+  },
   role: {
     type: String,
     default: "Student",

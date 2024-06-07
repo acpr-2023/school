@@ -11,6 +11,7 @@ const studentRegister = async (req, res) => {
       rollNum: req.body.rollNum,
       school: req.body.adminID,
       sclassName: req.body.sclassName,
+      schoolYear: req.body.schoolYear, // Ensure the school year is included in the check for existing student
     });
 
     if (existingStudent) {
@@ -103,7 +104,7 @@ const deleteStudent = async (req, res) => {
     const result = await Student.findByIdAndDelete(req.params.id);
     res.send(result);
   } catch (error) {
-    res.status(500).json(err);
+    res.status(500).json(error);
   }
 };
 
@@ -116,7 +117,7 @@ const deleteStudents = async (req, res) => {
       res.send(result);
     }
   } catch (error) {
-    res.status(500).json(err);
+    res.status(500).json(error);
   }
 };
 
@@ -129,7 +130,7 @@ const deleteStudentsByClass = async (req, res) => {
       res.send(result);
     }
   } catch (error) {
-    res.status(500).json(err);
+    res.status(500).json(error);
   }
 };
 

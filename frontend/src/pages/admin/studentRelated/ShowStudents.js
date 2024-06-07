@@ -44,7 +44,7 @@ const ShowStudents = () => {
   ];
 
   const studentRows = studentsList.map((student) => ({
-    schoolYear: student.sclassName.schoolYear, // Ensure this field exists
+    schoolYear: student.schoolYear, // Make sure to include the schoolYear field from the student object
     name: student.name,
     rollNum: student.rollNum,
     sclassName: student.sclassName.sclassName,

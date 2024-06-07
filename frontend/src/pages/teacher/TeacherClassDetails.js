@@ -3,9 +3,21 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getClassStudents } from "../../redux/sclassRelated/sclassHandle";
-import { Paper, Box } from "@mui/material";
-import TableTemplate from "../../components/TableTemplate";
-import { BeigeButton } from "../../components/buttonStyles";
+import {
+  Paper,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Container,
+  Typography,
+} from "@mui/material";
+import styled from "styled-components";
+
 const TeacherClassDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,6 +45,7 @@ const TeacherClassDetails = () => {
   ];
 
   const studentRows = sclassStudents.map((student) => {
+    console.log("Student Data:", student); // Debugging log
     return {
       name: student.name,
       rollNum: student.rollNum,
@@ -44,25 +57,27 @@ const TeacherClassDetails = () => {
 
   const StudentsButtonHaver = ({ row }) => {
     return (
-      <>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-          }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <StyledButton
+          variant="contained"
+          onClick={() => navigate("/Teacher/class/student/" + row.id)}
         >
-          <BeigeButton
-            variant="contained"
-            onClick={() => navigate("/Teacher/class/student/" + row.id)}
-          >
-            View
-          </BeigeButton>
-        </Box>
-      </>
+          View
+        </StyledButton>
+      </Box>
     );
   };
+
+  const teachSclass = currentUser.teachSclass
+    ? currentUser.teachSclass.sclassName
+    : "Unknown Class";
 
   return (
     <>
@@ -71,29 +86,79 @@ const TeacherClassDetails = () => {
       ) : (
         <>
           {getresponse ? (
-            <>
+            <CenteredBox>No Students Found</CenteredBox>
+          ) : (
+            <Container>
+              <Typography
+                variant="h4"
+                align="left"
+                gutterBottom
+                sx={{ fontWeight: "bold", marginTop: "50px" }}
+              >
+                {teachSclass}
+              </Typography>
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                  marginTop: "20px",
+                  borderBottom: "3px solid #ff8c0f",
+                  marginTop: "5px",
+                  marginBottom: "20px",
                 }}
-              >
-                No Students Found
-              </Box>
-            </>
-          ) : (
-            <Paper sx={{ width: "100%", overflow: "hidden" }}>
-              {Array.isArray(sclassStudents) && sclassStudents.length > 0 && (
-                <TableTemplate
-                  buttonHaver={StudentsButtonHaver}
-                  columns={studentColumns}
-                  rows={studentRows}
-                />
-              )}
-            </Paper>
+              />
+              <StyledPaper>
+                {Array.isArray(sclassStudents) && sclassStudents.length > 0 && (
+                  <TableContainer component={Paper}>
+                    <StyledTable>
+                      <TableHead>
+                        <TableRow>
+                          {studentColumns.map((column) => (
+                            <StyledTableCellHeader
+                              key={column.id}
+                              sx={{
+                                borderBottom: "1.5px solid #000",
+                                borderRight: "1.5px solid #000",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {column.label}
+                            </StyledTableCellHeader>
+                          ))}
+                          <StyledTableCellHeader
+                            sx={{
+                              borderBottom: "1.5px solid #000",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Action
+                          </StyledTableCellHeader>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {studentRows.map((row, index) => (
+                          <StyledTableRow
+                            key={row.id}
+                            index={index}
+                            length={studentRows.length}
+                          >
+                            {studentColumns.map((column) => {
+                              const value = row[column.id];
+                              console.log(`Value for ${column.id}:`, value); // Debugging log
+                              return (
+                                <StyledTableCell key={column.id}>
+                                  {value}
+                                </StyledTableCell>
+                              );
+                            })}
+                            <StyledTableCell>
+                              <StudentsButtonHaver row={row} />
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        ))}
+                      </TableBody>
+                    </StyledTable>
+                  </TableContainer>
+                )}
+              </StyledPaper>
+            </Container>
           )}
         </>
       )}
@@ -102,3 +167,67 @@ const TeacherClassDetails = () => {
 };
 
 export default TeacherClassDetails;
+
+const StyledPaper = styled(Paper)`
+  width: 100%;
+  overflow: hidden;
+  margin-top: 20px;
+`;
+
+const CenteredBox = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const StyledTable = styled(Table)`
+  min-width: 650px;
+`;
+
+const StyledTableCellHeader = styled(TableCell)`
+  background-color: #ded2c6;
+  font-weight: bold;
+  padding: 16px;
+  border-bottom: 2px solid #000;
+  border-right: 1.5px solid #000;
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+const StyledTableCell = styled(TableCell)`
+  font-weight: bold;
+  padding: 16px;
+  border-bottom: 2px solid #000;
+  border-right: 1.5px solid #000;
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+const StyledTableRow = styled(TableRow)`
+  background-color: ${({ index, length }) =>
+    index === 0 || index === length - 1 ? "#FFEDDA" : "#ffffff"};
+
+  &:nth-of-type(odd) {
+    background-color: ${({ index, length }) =>
+      index === 0 || index === length - 1 ? "#FFEDDA" : "#f9f9f9"};
+  }
+
+  &:nth-of-type(even) {
+    background-color: ${({ index, length }) =>
+      index === 0 || index === length - 1 ? "#FFEDDA" : "#ffffff"};
+  }
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    background-color: #cdb49a !important;
+    color: #ffffff !important;
+    &:hover {
+      background-color: #ff8c0f !important;
+    }
+  }
+`;

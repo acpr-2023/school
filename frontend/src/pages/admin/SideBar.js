@@ -28,8 +28,8 @@ const SideBar = () => {
             <HomeIcon
               color={
                 location.pathname === ("/" || "/Admin/dashboard")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -40,8 +40,8 @@ const SideBar = () => {
             <ClassOutlinedIcon
               color={
                 location.pathname.startsWith("/Admin/classes")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -52,8 +52,8 @@ const SideBar = () => {
             <AssignmentIcon
               color={
                 location.pathname.startsWith("/Admin/subjects")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -64,8 +64,8 @@ const SideBar = () => {
             <SupervisorAccountOutlinedIcon
               color={
                 location.pathname.startsWith("/Admin/teachers")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -76,8 +76,8 @@ const SideBar = () => {
             <PersonOutlineIcon
               color={
                 location.pathname.startsWith("/Admin/students")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -88,8 +88,8 @@ const SideBar = () => {
             <AnnouncementOutlinedIcon
               color={
                 location.pathname.startsWith("/Admin/notices")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -100,8 +100,8 @@ const SideBar = () => {
             <ReportIcon
               color={
                 location.pathname.startsWith("/Admin/complains")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -118,8 +118,8 @@ const SideBar = () => {
             <AccountCircleOutlinedIcon
               color={
                 location.pathname.startsWith("/Admin/profile")
-                  ? "primary"
-                  : "inherit"
+                  ? "#ff8c0f"
+                  : "#CDB49A"
               }
             />
           </ListItemIcon>
@@ -129,7 +129,7 @@ const SideBar = () => {
           <ListItemIcon>
             <ExitToAppIcon
               color={
-                location.pathname.startsWith("/logout") ? "primary" : "inherit"
+                location.pathname.startsWith("/logout") ? "#ff8c0f" : "#CDB49A"
               }
             />
           </ListItemIcon>

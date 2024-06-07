@@ -45,79 +45,117 @@ const StudentHomePage = () => {
   ];
   return (
     <>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={3} lg={3}>
-            <StyledPaper>
-              <img src={Subject} alt="Subjects" />
+      <CenteredContainer maxWidth="lg">
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={6}>
               <Title>Total Subjects</Title>
-              <Data start={0} end={numberOfSubjects} duration={2.5} />
-            </StyledPaper>
-          </Grid>
-          <Grid item xs={12} md={4} lg={3}>
-            <ChartContainer>
-              {response ? (
-                <Typography variant="h6">No Attendance Found</Typography>
-              ) : (
-                <>
-                  {loading ? (
-                    <Typography variant="h6">Loading...</Typography>
+              <StyledPaper>
+                <img src={Subject} alt="Subjects" />
+                <Data start={0} end={numberOfSubjects} duration={2.5} />
+              </StyledPaper>
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              <Title>Attendance</Title>
+              <StyledPaper>
+                <ChartContainer>
+                  {response ? (
+                    <Typography variant="h6">No Attendance Found</Typography>
                   ) : (
                     <>
-                      {subjectAttendance &&
-                      Array.isArray(subjectAttendance) &&
-                      subjectAttendance.length > 0 ? (
-                        <>
-                          <CustomPieChart data={chartData} />
-                        </>
+                      {loading ? (
+                        <Typography variant="h6">Loading...</Typography>
                       ) : (
-                        <Typography variant="h6">
-                          No Attendance Found
-                        </Typography>
+                        <>
+                          {subjectAttendance &&
+                          Array.isArray(subjectAttendance) &&
+                          subjectAttendance.length > 0 ? (
+                            <>
+                              <CustomPieChart data={chartData} />
+                            </>
+                          ) : (
+                            <Typography variant="h6">
+                              No Attendance Found
+                            </Typography>
+                          )}
+                        </>
                       )}
                     </>
                   )}
-                </>
-              )}
-            </ChartContainer>
+                </ChartContainer>
+              </StyledPaper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+                <SeeNotice />
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-              <SeeNotice />
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </CenteredContainer>
     </>
   );
 };
 
 const ChartContainer = styled.div`
-  padding: 2px;
+  && {
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 5px;
+    width: 70%;
+    max-width: 500px; /* Set a max-width if needed */
+    margin: 0 auto;
+  }
+
+  &:hover {
+    background-color: ;
+  }
+`;
+
+const CenteredContainer = styled(Container)`
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  height: 240px;
-  justify-content: center;
   align-items: center;
-  text-align: center;
+  margin-top: 20px; /* Add margin top */
 `;
 
 const StyledPaper = styled(Paper)`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
+  && {
+    background-color: #ded2c6;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 70%;
+    max-width: 500px; /* Set a max-width if needed */
+    margin: 0 auto;
+  }
+
+  &:hover {
+    background-color: #ff8c0f;
+  }
 `;
 
 const Title = styled.p`
   font-size: 1.25rem;
+  text-align: center;
+  font-weight: bold;
 `;
 
 const Data = styled(CountUp)`
-  font-size: calc(1.3rem + 0.6vw);
+  font-size: calc(3rem + 0.6vw);
   color: green;
 `;
 

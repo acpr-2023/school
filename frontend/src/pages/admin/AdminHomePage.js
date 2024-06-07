@@ -58,8 +58,12 @@ const AdminHomePage = () => {
             </StyledPaper>
           </Grid>
           <Grid item xs={12}>
-            <Grid container justifyContent="center" alignItems="center"> {/* Nested Grid container */}
-              <Grid item xs={8}> {/* Adjust width as needed */}
+            <Grid container justifyContent="center" alignItems="center">
+              {" "}
+              {/* Nested Grid container */}
+              <Grid item xs={8}>
+                {" "}
+                {/* Adjust width as needed */}
                 <NoticePaper>
                   <SeeNotice />
                 </NoticePaper>

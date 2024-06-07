@@ -8,7 +8,10 @@ import {
   Paper,
   Table,
   TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
+  TableRow,
   Typography,
   Box,
 } from "@mui/material";
@@ -19,7 +22,9 @@ import InsertChartIcon from "@mui/icons-material/InsertChart";
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
-import { StyledTableCell, StyledTableRow } from "../../components/styles";
+
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 const StudentSubjects = () => {
   const dispatch = useDispatch();
@@ -28,20 +33,14 @@ const StudentSubjects = () => {
     (state) => state.user
   );
 
+  const [subjectMarks, setSubjectMarks] = useState([]);
+  const [selectedSection, setSelectedSection] = useState("table");
+
   useEffect(() => {
     if (currentUser && currentUser._id) {
       dispatch(getUserDetails(currentUser._id, "Student"));
     }
   }, [dispatch, currentUser]);
-
-  if (response) {
-    console.log(response);
-  } else if (error) {
-    console.log(error);
-  }
-
-  const [subjectMarks, setSubjectMarks] = useState([]);
-  const [selectedSection, setSelectedSection] = useState("table");
 
   useEffect(() => {
     if (userDetails) {
@@ -70,58 +69,117 @@ const StudentSubjects = () => {
 
   const renderTableSection = () => {
     return (
-      <>
-        <Typography variant="h4" align="center" gutterBottom>
+      <Container>
+        <Typography
+          variant="h4"
+          align="left"
+          gutterBottom
+          sx={{ fontWeight: "bold", marginTop: "50px" }}
+        >
           Subject Marks
         </Typography>
-        <Table>
-          <TableHead>
-            <StyledTableRow>
-              <StyledTableCell>Subject</StyledTableCell>
-              <StyledTableCell>Marks</StyledTableCell>
-            </StyledTableRow>
-          </TableHead>
-          <TableBody>
-            {subjectMarks.map((result, index) => {
-              if (!result.subName || !result.marksObtained) {
-                return null;
-              }
-              return (
-                <StyledTableRow key={index}>
-                  <StyledTableCell>{result.subName.subName}</StyledTableCell>
-                  <StyledTableCell>{result.marksObtained}</StyledTableCell>
-                </StyledTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </>
+        <Box
+          sx={{
+            borderBottom: "3px solid #ff8c0f",
+            marginTop: "5px",
+            marginBottom: "20px",
+          }}
+        />
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  sx={{
+                    backgroundColor: "#ded2c6",
+                    fontWeight: "bold",
+                    borderBottom: "2px solid #000",
+                    borderRight: "1.5px solid #000",
+                  }}
+                >
+                  SUBJECT
+                </TableCell>
+                <TableCell
+                  sx={{
+                    backgroundColor: "#ded2c6",
+                    fontWeight: "bold",
+                    borderBottom: "2px solid #000",
+                  }}
+                >
+                  MARKS
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {subjectMarks.map((result) => (
+                <TableRow key={result.subName.subName}>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#FFEDDA",
+                      borderBottom: "1.5px solid #000",
+                      borderRight: "1.5px solid #000",
+                    }}
+                  >
+                    {result.subName.subName}
+                  </TableCell>
+                  <TableCell sx={{ borderBottom: "1.5px solid #000" }}>
+                    {result.marksObtained}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {/* Add a new row for the average marks */}
+              <TableRow>
+                <TableCell
+                  sx={{
+                    backgroundColor: "#ded2c6",
+                    fontWeight: "bold",
+                    borderBottom: "2px solid #000",
+                    borderRight: "1.5px solid #000",
+                  }}
+                >
+                  Average Marks
+                </TableCell>
+                <TableCell
+                  sx={{ borderBottom: "2px solid #000", fontWeight: "bold" }}
+                >
+                  {calculateAverageMarks()}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     );
   };
 
   const renderAverageMarks = () => {
     const averageMarks = calculateAverageMarks();
     console.log("Average Marks:", averageMarks); // Debugging log
-    return (
-      <Container
-        sx={{
-          marginTop: 4,
-          padding: 2,
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <Typography variant="h5" align="center" gutterBottom>
-          Average Marks (GPA)
-        </Typography>
-        <Box display="flex" justifyContent="center">
-          <Typography variant="h4" color="primary">
-            {averageMarks}
-          </Typography>
-        </Box>
-      </Container>
-    );
+    // return (
+    //   <Container
+    //     sx={{
+    //       marginTop: 4,
+    //       padding: 2,
+    //       borderRadius: "8px",
+    //       boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Added shadow
+    //       backgroundColor: "#ded2c6",
+    //     }}
+    //   >
+    //     <Typography
+    //       variant="h5"
+    //       align="center"
+    //       gutterBottom
+    //       sx={{ fontWeight: "bold" }}
+    //     >
+    //       Average Marks (GPA)
+    //     </Typography>
+    //     <Box display="flex" justifyContent="center">
+    //       <Typography variant="h4" sx={{ color: "#ff8c0f" }}>
+    //         {averageMarks}
+    //       </Typography>
+    //     </Box>
+    //   </Container>
+    // );
   };
 
   const renderChartSection = () => {

@@ -21,6 +21,7 @@ const AddStudent = ({ situation }) => {
   const [password, setPassword] = useState("");
   const [className, setClassName] = useState("");
   const [sclassName, setSclassName] = useState("");
+  const [schoolYear, setSchoolYear] = useState("");
   const [birthdate, setBirthdate] = useState("");
   const [gender, setGender] = useState("");
   const [contactNumber, setContactNumber] = useState("");
@@ -46,17 +47,17 @@ const AddStudent = ({ situation }) => {
     dispatch(getAllSclasses(adminID, "Sclass"));
   }, [adminID, dispatch]);
 
-  const changeHandler = (event) => {
-    if (event.target.value === "Select Class") {
-      setClassName("Select Class");
-      setSclassName("");
-    } else {
-      const selectedClass = sclassesList.find(
-        (classItem) => classItem.sclassName === event.target.value
-      );
-      setClassName(selectedClass.sclassName);
-      setSclassName(selectedClass._id);
-    }
+  const handleClassNameChange = (event) => {
+    const selectedClassName = event.target.value;
+    setClassName(selectedClassName);
+    const selectedClass = sclassesList.find(
+      (classItem) => classItem.sclassName === selectedClassName
+    );
+    setSclassName(selectedClass ? selectedClass._id : "");
+  };
+
+  const handleSchoolYearChange = (event) => {
+    setSchoolYear(event.target.value);
   };
 
   const fields = {
@@ -64,6 +65,7 @@ const AddStudent = ({ situation }) => {
     rollNum,
     password,
     sclassName,
+    schoolYear,
     adminID,
     role,
     attendance,
@@ -71,14 +73,14 @@ const AddStudent = ({ situation }) => {
     gender,
     contactNumber,
     emergencyContactNumber,
-    email, // Add email field
-    address, // Add address field
+    email,
+    address,
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if (sclassName === "") {
-      setMessage("Please select a classname");
+    if (!className || !schoolYear) {
+      setMessage("Please select a class name and school year");
       setShowPopup(true);
     } else {
       setLoader(true);
@@ -118,17 +120,35 @@ const AddStudent = ({ situation }) => {
           />
           {situation === "Student" && (
             <>
-              <label>Class</label>
+              <label>Class Name</label>
               <select
                 className="registerInput"
                 value={className}
-                onChange={changeHandler}
+                onChange={handleClassNameChange}
                 required
               >
-                <option value="Select Class">Select Class</option>
+                <option value="">Select Class Name</option>
                 {sclassesList.map((classItem, index) => (
                   <option key={index} value={classItem.sclassName}>
                     {classItem.sclassName}
+                  </option>
+                ))}
+              </select>
+              <label>School Year</label>
+              <select
+                className="registerInput"
+                value={schoolYear}
+                onChange={handleSchoolYearChange}
+                required
+              >
+                <option value="">Select School Year</option>
+                {[
+                  ...new Set(
+                    sclassesList.map((classItem) => classItem.schoolYear)
+                  ),
+                ].map((year, index) => (
+                  <option key={index} value={year}>
+                    {year}
                   </option>
                 ))}
               </select>
@@ -192,7 +212,7 @@ const AddStudent = ({ situation }) => {
             onChange={(event) => setEmergencyContactNumber(event.target.value)}
             required
           />
-          <label>Email</label> {/* Add Email field */}
+          <label>Email</label>
           <input
             className="registerInput"
             type="email"
@@ -201,7 +221,7 @@ const AddStudent = ({ situation }) => {
             onChange={(event) => setEmail(event.target.value)}
             required
           />
-          <label>Address</label> {/* Add Address field */}
+          <label>Address</label>
           <input
             className="registerInput"
             type="text"

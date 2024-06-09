@@ -6,7 +6,17 @@ import {
   getClassStudents,
   getSubjectList,
 } from "../../../redux/sclassRelated/sclassHandle";
-import { Box, Container, Typography, Tab, IconButton } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Tab,
+  IconButton,
+  CircularProgress,
+  Card,
+  CardContent,
+  Grid,
+} from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
@@ -237,91 +247,111 @@ const ClassDetails = () => {
   };
 
   const ClassTeachersSection = () => {
-    return <>Teachers</>;
+    return <Typography variant="h5">Teachers</Typography>;
   };
 
   const ClassDetailsSection = () => {
     const numberOfSubjects = subjectsList.length;
     const numberOfStudents = sclassStudents.length;
-
+  
     return (
-      <>
-        <Typography variant="h4" align="center" gutterBottom>
-          Class Details
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          This is Class {sclassDetails && sclassDetails.sclassName}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          School Year: {sclassDetails && sclassDetails.schoolYear}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Number of Subjects: {numberOfSubjects}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Number of Students: {numberOfStudents}
-        </Typography>
-        {getresponse && (
-          <GreenButton
-            variant="contained"
-            onClick={() => navigate("/Admin/class/addstudents/" + classID)}
-          >
-            Add Students
-          </GreenButton>
-        )}
-        {response && (
-          <GreenButton
-            variant="contained"
-            onClick={() => navigate("/Admin/addsubject/" + classID)}
-          >
-            Add Subjects
-          </GreenButton>
-        )}
-      </>
+      <Card sx={{ marginTop: 4 }}>
+        <CardContent>
+          <Typography variant="h4" align="center" gutterBottom>
+            <strong>Class Details</strong>
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">Class Name:</Typography>
+              <Typography variant="body1">{sclassDetails?.sclassName}</Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">School Year:</Typography>
+              <Typography variant="body1">{sclassDetails?.schoolYear}</Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">Number of Subjects:</Typography>
+              <Typography variant="body1">{numberOfSubjects}</Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">Number of Students:</Typography>
+              <Typography variant="body1">{numberOfStudents}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                {getresponse && (
+                  <GreenButton
+                    variant="contained"
+                    onClick={() => navigate("/Admin/class/addstudents/" + classID)}
+                  >
+                    Add Students
+                  </GreenButton>
+                )}
+                {response && (
+                  <GreenButton
+                    variant="contained"
+                    onClick={() => navigate("/Admin/addsubject/" + classID)}
+                  >
+                    Add Subjects
+                  </GreenButton>
+                )}
+              </Box>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     );
   };
+  
 
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
       ) : (
-        <>
-          <Box sx={{ width: "100%", typography: "body1" }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList
-                  onChange={handleChange}
-                  sx={{
-                    position: "fixed",
-                    width: "100%",
-                    bgcolor: "background.paper",
-                    zIndex: 1,
-                  }}
-                >
-                  <Tab label="Details" value="1" />
-                  <Tab label="Subjects" value="2" />
-                  <Tab label="Students" value="3" />
-                  <Tab label="Teachers" value="4" />
-                </TabList>
-              </Box>
-              <Container sx={{ marginTop: "3rem", marginBottom: "4rem" }}>
-                <TabPanel value="1">
-                  <ClassDetailsSection />
-                </TabPanel>
-                <TabPanel value="2">
-                  <ClassSubjectsSection />
-                </TabPanel>
-                <TabPanel value="3">
-                  <ClassStudentsSection />
-                </TabPanel>
-                <TabPanel value="4">
-                  <ClassTeachersSection />
-                </TabPanel>
-              </Container>
-            </TabContext>
-          </Box>
-        </>
+        <Box sx={{ width: "100%", typography: "body1" }}>
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleChange}
+                sx={{
+                  position: "fixed",
+                  width: "100%",
+                  bgcolor: "background.paper",
+                  zIndex: 1,
+                }}
+              >
+                <Tab label="Details" value="1" />
+                <Tab label="Subjects" value="2" />
+                <Tab label="Students" value="3" />
+                <Tab label="Teachers" value="4" />
+              </TabList>
+            </Box>
+            <Container sx={{ marginTop: "3rem", marginBottom: "4rem" }}>
+              <TabPanel value="1">
+                <ClassDetailsSection />
+              </TabPanel>
+              <TabPanel value="2">
+                <ClassSubjectsSection />
+              </TabPanel>
+              <TabPanel value="3">
+                <ClassStudentsSection />
+              </TabPanel>
+              <TabPanel value="4">
+                <ClassTeachersSection />
+              </TabPanel>
+            </Container>
+          </TabContext>
+        </Box>
       )}
       <Popup
         message={message}

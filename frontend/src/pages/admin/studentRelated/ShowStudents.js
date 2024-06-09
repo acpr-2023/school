@@ -67,7 +67,8 @@ const ShowStudents = () => {
         >
           View
         </BlueButton>
-        <BlueButton variant="contained" onClick={handlePromote}>
+        <BlueButton variant="contained"  onClick={() => navigate("/Admin/students/student/" + row.id)}
+        >
           Promote
         </BlueButton>
       </>

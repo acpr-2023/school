@@ -15,7 +15,6 @@ const PromoteStudent = () => {
 
   const adminID = currentUser._id;
 
-
   useEffect(() => {
     dispatch(getAllStudents(currentUser._id));
   }, [currentUser._id, dispatch]);
@@ -35,16 +34,18 @@ const PromoteStudent = () => {
   const handleClassChange = (event) => {
     const selectedClassName = event.target.value;
     setClassName(selectedClassName);
-    selectedClass = sclassesList.find(
+    const selectedClass = sclassesList.find(
       (classItem) => classItem.sclassName === selectedClassName
     );
-    setStudentsToPromote(selectedClass ? selectedClass._id : "");
+    const filteredStudents = studentsList.filter(student => 
+      student.sclassName.sclassName === selectedClassName && student.schoolYear === selectedSchoolYear
+    );
+    setStudentsToPromote(filteredStudents);
   };
 
   const studentColumns = [
     { id: "name", label: "Student Name", minWidth: 170 },
     { id: "rollNum", label: "Student Number", minWidth: 100 },
-    // Add a checkbox column for selecting students to promote
     {
       id: "promote",
       label: "Promote",
@@ -67,12 +68,6 @@ const PromoteStudent = () => {
     // Navigate back to the main student list after promotion
     navigate("/Admin/students");
   };
-
-  useEffect(() => {
-    // Get all unique school years from studentsList
-    const uniqueSchoolYears = [...new Set(studentsList.map((student) => student.schoolYear))];
-    // Update dropdown options based on unique school years
-  }, [studentsList]);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -129,4 +124,3 @@ const PromoteStudent = () => {
 };
 
 export default PromoteStudent;
-

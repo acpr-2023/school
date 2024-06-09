@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Container, Grid, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import SeeNotice from "../../components/SeeNotice";
 import CountUp from "react-countup";
-import Students from "../../assets/img1.png";
+import StudentsPic from "../../assets/StudentsPic.png";
+import TimePic from "../../assets/TimePic.png";
+import DatePic from "../../assets/DatePic.png";
 import {
   getClassStudents,
   getSubjectDetails,
@@ -42,37 +43,52 @@ const TeacherHomePage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6} lg={6}>
-          <StyledPaper>
-            <img src={Students} alt="Students" width="200" height="200" />
-            <Title>Class Students</Title>
-            <Data start={0} end={numberOfStudents} duration={2.5} />
-          </StyledPaper>
+      <WhiteBackgroundPaper>
+        <Grid container spacing={3}>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item xs={12} md={4} lg={4}>
+              <StyledPaper>
+                <img src={StudentsPic} alt="Students" width="80" height="80" />
+                <Title>Class Students</Title>
+                <Data start={0} end={numberOfStudents} duration={2.5} />
+              </StyledPaper>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+              <DatePaper>
+                <Typography variant="h6">
+                  <img src={DatePic} alt="Students" width="50" height="50" />
+                  <Title>Today's Date</Title>
+                  {currentDateTime.toLocaleDateString()}
+                </Typography>
+              </DatePaper>
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+              <TimePaper>
+                <Typography variant="h6">
+                  <img src={TimePic} alt="Students" width="50" height="50" />
+                  <Title>Current Time</Title>
+                  {currentDateTime.toLocaleTimeString()}
+                </Typography>
+              </TimePaper>
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <NoticePaper>
+              <Typography variant="h6">No Notices to Show Right Now</Typography>
+            </NoticePaper>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={3} lg={3}>
-          <DatePaper>
-            <Typography variant="h6">
-              <Title>Today's Date</Title>
-              {currentDateTime.toLocaleDateString()}
-            </Typography>
-          </DatePaper>
-          <TimePaper>
-            <Typography variant="h6">
-              <Title>Current Time</Title>
-              {currentDateTime.toLocaleTimeString()}
-            </Typography>
-          </TimePaper>
-        </Grid>
-        <Grid item xs={12}>
-          <NoticePaper>
-            <Typography variant="h6">No Notices to Show Right Now</Typography>
-          </NoticePaper>
-        </Grid>
-      </Grid>
+      </WhiteBackgroundPaper>
     </Container>
   );
 };
+
+const WhiteBackgroundPaper = styled(Paper)`
+  && {
+    background-color: white;
+    padding: 16px;
+  }
+`;
 
 const StyledPaper = styled(Paper)`
   && {
@@ -83,7 +99,7 @@ const StyledPaper = styled(Paper)`
     justify-content: center;
     align-items: center;
     text-align: center;
-    height: 425px;
+    height: 200px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
@@ -101,16 +117,15 @@ const DatePaper = styled(Paper)`
   && {
     background-color: #ded2c6;
     padding: 16px;
-    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     height: 200px;
-    width: 200%;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: green;
 
     &:hover {
       background-color: #ff8c0f;
@@ -126,16 +141,15 @@ const TimePaper = styled(Paper)`
   && {
     background-color: #ded2c6;
     padding: 16px;
-    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     height: 200px;
-    width: 200%;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: green;
 
     &:hover {
       background-color: #ff8c0f;
@@ -152,15 +166,12 @@ const NoticePaper = styled(Paper)`
     background-color: #ded2c6;
     padding: 200px;
     margin-bottom: 24px;
-    margin-left: -2px;
-    margin-right: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     cursor: pointer;
-    margin-top: 4px;
   }
 `;
 
@@ -168,10 +179,11 @@ const Title = styled.p`
   font-size: 1.25rem;
   color: white !important;
   padding: 15px;
+  font-weight: 500;
 `;
 
 const Data = styled(CountUp)`
-  font-size: calc(1.3rem + 0.6vw);
+  font-size: calc(1rem + 0.5vw);
   color: green;
   font-weight: bold;
 `;

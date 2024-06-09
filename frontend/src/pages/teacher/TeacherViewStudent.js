@@ -1,216 +1,241 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserDetails } from '../../redux/userRelated/userHandle';
-import { useNavigate, useParams } from 'react-router-dom'
-import { Box, Button, Collapse, Table, TableBody, TableHead, Typography } from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { calculateOverallAttendancePercentage, calculateSubjectAttendancePercentage, groupAttendanceBySubject } from '../../components/attendanceCalculator';
-import CustomPieChart from '../../components/CustomPieChart'
-import { PurpleButton } from '../../components/buttonStyles';
-import { StyledTableCell, StyledTableRow } from '../../components/styles';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDetails } from "../../redux/userRelated/userHandle";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableHead,
+  Typography,
+  Container,
+  Grid,
+  Paper,
+} from "@mui/material";
+import {
+  calculateOverallAttendancePercentage,
+  calculateSubjectAttendancePercentage,
+  groupAttendanceBySubject,
+} from "../../components/attendanceCalculator";
+import { StyledTableCell, StyledTableRow } from "../../components/styles";
 
 const TeacherViewStudent = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const dispatch = useDispatch();
+  const { currentUser, userDetails, response, loading, error } = useSelector(
+    (state) => state.user
+  );
 
-    const navigate = useNavigate()
-    const params = useParams()
-    const dispatch = useDispatch();
-    const { currentUser, userDetails, response, loading, error } = useSelector((state) => state.user);
+  const address = "Student";
+  const studentID = params.id;
+  const teachSubject = currentUser.teachSubject?.subName;
+  const teachSubjectID = currentUser.teachSubject?._id;
 
-    const address = "Student"
-    const studentID = params.id
-    const teachSubject = currentUser.teachSubject?.subName
-    const teachSubjectID = currentUser.teachSubject?._id
+  const [sclassName, setSclassName] = useState("");
+  const [studentSchool, setStudentSchool] = useState("");
+  const [subjectMarks, setSubjectMarks] = useState([]);
+  const [subjectAttendance, setSubjectAttendance] = useState([]);
 
-    useEffect(() => {
-        dispatch(getUserDetails(studentID, address));
-    }, [dispatch, studentID]);
+  useEffect(() => {
+    dispatch(getUserDetails(studentID, address));
+  }, [dispatch, studentID]);
 
-    if (response) { console.log(response) }
-    else if (error) { console.log(error) }
+  useEffect(() => {
+    if (userDetails) {
+      setSclassName(userDetails.sclassName || "");
+      setStudentSchool(userDetails.school || "");
+      setSubjectMarks(userDetails.examResult || []);
+      setSubjectAttendance(userDetails.attendance || []);
+    }
+  }, [userDetails]);
 
-    const [sclassName, setSclassName] = useState('');
-    const [studentSchool, setStudentSchool] = useState('');
-    const [subjectMarks, setSubjectMarks] = useState('');
-    const [subjectAttendance, setSubjectAttendance] = useState([]);
+  const overallAttendancePercentage =
+    calculateOverallAttendancePercentage(subjectAttendance);
+  const overallAbsentPercentage = 100 - overallAttendancePercentage;
 
-    const [openStates, setOpenStates] = useState({});
+  const chartData = [
+    { name: "Present", value: overallAttendancePercentage },
+    { name: "Absent", value: overallAbsentPercentage },
+  ];
 
-    const handleOpen = (subId) => {
-        setOpenStates((prevState) => ({
-            ...prevState,
-            [subId]: !prevState[subId],
-        }));
-    };
+  return (
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <Container>
+          <Paper
+            elevation={3}
+            style={{
+              margin: "20px 0",
+              padding: "30px",
+              backgroundColor: "#ded2c6",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography variant="h5" color="black" padding="10px">
+                  Name: {userDetails.name}
+                </Typography>
+                <Typography variant="h5" color="black" padding="10px">
+                  Student Number: {userDetails.rollNum}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5" color="black" padding="10px">
+                  Class: {sclassName.sclassName}
+                </Typography>
+                <Typography variant="h5" color="black" padding="10px">
+                  School: {studentSchool.schoolName}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Paper>
 
-    useEffect(() => {
-        if (userDetails) {
-            setSclassName(userDetails.sclassName || '');
-            setStudentSchool(userDetails.school || '');
-            setSubjectMarks(userDetails.examResult || '');
-            setSubjectAttendance(userDetails.attendance || []);
-        }
-    }, [userDetails]);
+          <Box textAlign="center" my={2}>
+            <Button
+              variant="contained"
+              onClick={() =>
+                navigate(
+                  `/Teacher/class/student/attendance/${studentID}/${teachSubjectID}`
+                )
+              }
+              sx={{
+                margin: "0 10px",
+                backgroundColor: "#ded2c6",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#ff8c0f",
+                },
+              }}
+            >
+              Add Attendance
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() =>
+                navigate(
+                  `/Teacher/class/student/marks/${studentID}/${teachSubjectID}`
+                )
+              }
+              sx={{
+                margin: "0 10px",
+                backgroundColor: "#ded2c6",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#ff8c0f",
+                },
+              }}
+            >
+              Add Marks
+            </Button>
+          </Box>
 
-    const overallAttendancePercentage = calculateOverallAttendancePercentage(subjectAttendance);
-    const overallAbsentPercentage = 100 - overallAttendancePercentage;
+          <Box mt={2}>
+            <Typography variant="h5" color="#6b4c35">
+              Attendance Sheet
+            </Typography>
+            {subjectAttendance &&
+              Array.isArray(subjectAttendance) &&
+              subjectAttendance.length > 0 && (
+                <Table>
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Subject</StyledTableCell>
+                      <StyledTableCell>Present</StyledTableCell>
+                      <StyledTableCell>Total Sessions</StyledTableCell>
+                      <StyledTableCell>Attendance Percentage</StyledTableCell>
+                      <StyledTableCell>Date</StyledTableCell>
+                      <StyledTableCell>Status</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
 
-    const chartData = [
-        { name: 'Present', value: overallAttendancePercentage },
-        { name: 'Absent', value: overallAbsentPercentage }
-    ];
+                  <TableBody>
+                    {Object.entries(
+                      groupAttendanceBySubject(subjectAttendance)
+                    ).map(
+                      (
+                        [subName, { present, allData, subId, sessions }],
+                        index
+                      ) => {
+                        if (subName === teachSubject) {
+                          const subjectAttendancePercentage =
+                            calculateSubjectAttendancePercentage(
+                              present,
+                              sessions
+                            );
 
-    return (
-        <>
-            {loading
-                ?
-                <>
-                    <div>Loading...</div>
-                </>
-                :
-                <div>
-                    Name: {userDetails.name}
-                    <br />
-                    Student Number: {userDetails.rollNum}
-                    <br />
-                    Class: {sclassName.sclassName}
-                    <br />
-                    School: {studentSchool.schoolName}
-                    <br /><br />
-
-                    <h3>Attendance:</h3>
-                    {subjectAttendance && Array.isArray(subjectAttendance) && subjectAttendance.length > 0
-                        &&
-                        <>
-                            {Object.entries(groupAttendanceBySubject(subjectAttendance)).map(([subName, { present, allData, subId, sessions }], index) => {
-                                if (subName === teachSubject) {
-                                    const subjectAttendancePercentage = calculateSubjectAttendancePercentage(present, sessions);
-
-                                    return (
-                                        <Table key={index}>
-                                            <TableHead>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>Subject</StyledTableCell>
-                                                    <StyledTableCell>Present</StyledTableCell>
-                                                    <StyledTableCell>Total Sessions</StyledTableCell>
-                                                    <StyledTableCell>Attendance Percentage</StyledTableCell>
-                                                    <StyledTableCell align="center">Actions</StyledTableCell>
-                                                </StyledTableRow>
-                                            </TableHead>
-
-                                            <TableBody>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>{subName}</StyledTableCell>
-                                                    <StyledTableCell>{present}</StyledTableCell>
-                                                    <StyledTableCell>{sessions}</StyledTableCell>
-                                                    <StyledTableCell>{subjectAttendancePercentage}%</StyledTableCell>
-                                                    <StyledTableCell align="center">
-                                                        <Button variant="contained" onClick={() => handleOpen(subId)}>
-                                                            {openStates[subId] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}Details
-                                                        </Button>
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                                <StyledTableRow>
-                                                    <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                                        <Collapse in={openStates[subId]} timeout="auto" unmountOnExit>
-                                                            <Box sx={{ margin: 1 }}>
-                                                                <Typography variant="h6" gutterBottom component="div">
-                                                                    Attendance Details
-                                                                </Typography>
-                                                                <Table size="small" aria-label="purchases">
-                                                                    <TableHead>
-                                                                        <StyledTableRow>
-                                                                            <StyledTableCell>Date</StyledTableCell>
-                                                                            <StyledTableCell align="right">Status</StyledTableCell>
-                                                                        </StyledTableRow>
-                                                                    </TableHead>
-                                                                    <TableBody>
-                                                                        {allData.map((data, index) => {
-                                                                            const date = new Date(data.date);
-                                                                            const dateString = date.toString() !== "Invalid Date" ? date.toISOString().substring(0, 10) : "Invalid Date";
-                                                                            return (
-                                                                                <StyledTableRow key={index}>
-                                                                                    <StyledTableCell component="th" scope="row">
-                                                                                        {dateString}
-                                                                                    </StyledTableCell>
-                                                                                    <StyledTableCell align="right">{data.status}</StyledTableCell>
-                                                                                </StyledTableRow>
-                                                                            );
-                                                                        })}
-                                                                    </TableBody>
-                                                                </Table>
-                                                            </Box>
-                                                        </Collapse>
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                            </TableBody>
-                                        </Table>
-                                    )
-                                }
-                                else {
-                                    return null
-                                }
-                            })}
-                            <div>
-                                Overall Attendance Percentage: {overallAttendancePercentage.toFixed(2)}%
-                            </div>
-
-                            <CustomPieChart data={chartData} />
-                        </>
-                    }
-                    <br /><br />
-                    <Button
-                        variant="contained"
-                        onClick={() =>
-                            navigate(
-                                `/Teacher/class/student/attendance/${studentID}/${teachSubjectID}`
-                            )
+                          return allData.map((data, dataIndex) => {
+                            const date = new Date(data.date);
+                            const dateString =
+                              date.toString() !== "Invalid Date"
+                                ? date.toISOString().substring(0, 10)
+                                : "Invalid Date";
+                            return (
+                              <StyledTableRow key={`${index}-${dataIndex}`}>
+                                <StyledTableCell>{subName}</StyledTableCell>
+                                <StyledTableCell>{present}</StyledTableCell>
+                                <StyledTableCell>{sessions}</StyledTableCell>
+                                <StyledTableCell>
+                                  {subjectAttendancePercentage}%
+                                </StyledTableCell>
+                                <StyledTableCell>{dateString}</StyledTableCell>
+                                <StyledTableCell>{data.status}</StyledTableCell>
+                              </StyledTableRow>
+                            );
+                          });
+                        } else {
+                          return null;
                         }
-                    >
-                        Add Attendance
-                    </Button>
-                    <br /><br /><br />
-                    <h3>Subject Marks:</h3>
+                      }
+                    )}
+                  </TableBody>
+                </Table>
+              )}
+          </Box>
 
-                    {subjectMarks && Array.isArray(subjectMarks) && subjectMarks.length > 0 &&
-                        <>
-                            {subjectMarks.map((result, index) => {
-                                if (result.subName.subName === teachSubject) {
-                                    return (
-                                        <Table key={index}>
-                                            <TableHead>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>Subject</StyledTableCell>
-                                                    <StyledTableCell>Marks</StyledTableCell>
-                                                </StyledTableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>{result.subName.subName}</StyledTableCell>
-                                                    <StyledTableCell>{result.marksObtained}</StyledTableCell>
-                                                </StyledTableRow>
-                                            </TableBody>
-                                        </Table>
-                                    )
-                                }
-                                else if (!result.subName || !result.marksObtained) {
-                                    return null;
-                                }
-                                return null
-                            })}
-                        </>
-                    }
-                    <PurpleButton variant="contained"
-                        onClick={() =>
-                            navigate(
-                                `/Teacher/class/student/marks/${studentID}/${teachSubjectID}`
-                            )}>
-                        Add Marks
-                    </PurpleButton>
-                    <br /><br /><br />
-                </div>
-            }
-        </>
-    )
-}
+          <Box mt={2}>
+            <Typography variant="h5" color="#6b4c35">
+              Subject Marks
+            </Typography>
+            {subjectMarks &&
+              Array.isArray(subjectMarks) &&
+              subjectMarks.length > 0 && (
+                <Table>
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Subject</StyledTableCell>
+                      <StyledTableCell>Marks</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
+                  <TableBody>
+                    {subjectMarks.map((result, index) => {
+                      if (result.subName.subName === teachSubject) {
+                        return (
+                          <StyledTableRow key={index}>
+                            <StyledTableCell>
+                              {result.subName.subName}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              {result.marksObtained}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      }
+                      return null;
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+          </Box>
+        </Container>
+      )}
+    </>
+  );
+};
 
-export default TeacherViewStudent
+export default TeacherViewStudent;

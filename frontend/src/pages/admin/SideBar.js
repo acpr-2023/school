@@ -47,6 +47,12 @@ const SideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Students" />
                 </ListItemButton>
+                <ListItemButton component={Link} to="/Admin/promoteStudent">
+                    <ListItemIcon>
+                        <PersonOutlineIcon color={location.pathname.startsWith("/Admin/promoteStudent") ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Promote Students" />
+                </ListItemButton>
                 <ListItemButton component={Link} to="/Admin/notices">
                     <ListItemIcon>
                         <AnnouncementOutlinedIcon color={location.pathname.startsWith("/Admin/notices") ? 'primary' : 'inherit'} />
@@ -82,4 +88,4 @@ const SideBar = () => {
     )
 }
 
-export default SideBar
+export default SideBar;

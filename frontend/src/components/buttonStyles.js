@@ -102,3 +102,16 @@ export const IndigoButton = styled(Button)`
     }
   }
 `;
+
+export const BeigeButton = styled(Button)`
+  && {
+    background-color: #ded2c6;
+    color: black;
+    font-weight: bold;
+    &:hover {
+      background-color: #ff8c0f;
+      border-color: black;
+      box-shadow: none;
+    }
+  }
+`;

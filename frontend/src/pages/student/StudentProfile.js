@@ -5,12 +5,12 @@ import {
   CardContent,
   Typography,
   Grid,
-  Box,
   Avatar,
   Container,
   Paper,
 } from "@mui/material";
 import { useSelector } from "react-redux";
+import { Divider } from "@mui/material";
 
 const StudentProfile = () => {
   const { currentUser, response, error } = useSelector((state) => state.user);
@@ -36,60 +36,55 @@ const StudentProfile = () => {
       <Container maxWidth="md">
         <StyledPaper elevation={3}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Avatar alt="Student Avatar" sx={{ width: 150, height: 150 }}>
-                  {String(currentUser.name).charAt(0)}
-                </Avatar>
-              </Box>
+            <Grid item xs={12} md={4}>
+              <Avatar alt="Student Avatar" sx={{ width: 150, height: 150 }}>
+                {String(currentUser.name).charAt(0)}
+              </Avatar>
             </Grid>
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Typography variant="h5" component="h2" textAlign="center">
-                  {currentUser.name}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Typography
-                  variant="subtitle1"
-                  component="p"
-                  textAlign="center"
-                >
-                  Student Number: {currentUser.rollNum}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Typography
-                  variant="subtitle1"
-                  component="p"
-                  textAlign="center"
-                >
-                  Class: {className}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Typography
-                  variant="subtitle1"
-                  component="p"
-                  textAlign="center"
-                >
-                  School:{" "}
-                  {currentUser.school ? currentUser.school.schoolName : ""}
-                </Typography>
-              </Box>
+            <Grid item xs={12} md={8}>
+              <Typography
+                variant="h3"
+                component="h2"
+                textAlign="left"
+                sx={{ pl: 1 }}
+              >
+                {currentUser.name}
+              </Typography>
+              <Divider
+                sx={{ my: 1, borderBottomWidth: 3, borderColor: "#FF8C0F" }}
+              />{" "}
+              {/* Add a Divider with margin on the y-axis */}
+              <Typography
+                variant="subtitle1"
+                component="p"
+                textAlign="left"
+                sx={{ mb: 1 }}
+              >
+                <strong>Student Number:</strong> {currentUser.rollNum}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                component="p"
+                textAlign="left"
+                sx={{ mb: 1 }}
+              >
+                <strong>Class Section:</strong> {className}
+              </Typography>
+              <Typography variant="subtitle1" component="p" textAlign="left">
+                <strong>School:</strong>{" "}
+                {currentUser.school ? currentUser.school.schoolName : ""}
+              </Typography>
             </Grid>
           </Grid>
         </StyledPaper>
-        <Card>
+        <Card elevation={3}>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h5" gutterBottom>
               Personal Information
+              <Divider
+                sx={{ my: 1, borderBottomWidth: 3, borderColor: "#FF8C0F" }}
+              />{" "}
+              {/* Add a Divider with margin on the y-axis */}
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -135,6 +130,7 @@ const StudentProfile = () => {
 export default StudentProfile;
 
 const StyledPaper = styled(Paper)`
-  padding: 20px;
+  padding: 50px;
   margin-bottom: 20px;
+  margin-top: 30px; /* Add margin-top to create space at the top */
 `;

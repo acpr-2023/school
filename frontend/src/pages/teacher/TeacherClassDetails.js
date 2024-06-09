@@ -1,178 +1,233 @@
 import { useEffect } from "react";
-import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'
+import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getClassStudents } from "../../redux/sclassRelated/sclassHandle";
-import { Paper, Box, Typography, ButtonGroup, Button, Popper, Grow, ClickAwayListener, MenuList, MenuItem } from '@mui/material';
-import { BlackButton, BlueButton} from "../../components/buttonStyles";
-import TableTemplate from "../../components/TableTemplate";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import {
+  Paper,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Container,
+  Typography,
+} from "@mui/material";
+import styled from "styled-components";
 
 const TeacherClassDetails = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch();
-    const { sclassStudents, loading, error, getresponse } = useSelector((state) => state.sclass);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { sclassStudents, loading, error, getresponse } = useSelector(
+    (state) => state.sclass
+  );
 
-    const { currentUser } = useSelector((state) => state.user);
-    const classID = currentUser.teachSclass?._id
-    const subjectID = currentUser.teachSubject?._id
+  const { currentUser } = useSelector((state) => state.user);
+  const classID = currentUser.teachSclass?._id;
+  const subjectID = currentUser.teachSubject?._id;
 
-    useEffect(() => {
-        dispatch(getClassStudents(classID));
-    }, [dispatch, classID])
+  useEffect(() => {
+    dispatch(getClassStudents(classID));
+  }, [dispatch, classID]);
 
-    if (error) {
-        console.log(error)
-    }
+  if (error) {
+    console.log(error);
+  }
 
-    const studentColumns = [
-        { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'rollNum', label: 'Student Number', minWidth: 100 },
-    ]
+  const studentColumns = [
+    { id: "name", label: "Student Name", minWidth: 170 },
+    { id: "rollNum", label: "Student Number", minWidth: 100 },
+    { id: "schoolYear", label: "School Year", minWidth: 100 },
+    { id: "contactNumber", label: "Contact Number", minWidth: 100 },
+  ];
 
-    const studentRows = sclassStudents.map((student) => {
-        return {
-            name: student.name,
-            rollNum: student.rollNum,
-            id: student._id,
-        };
-    })
-
-    const StudentsButtonHaver = ({ row }) => {
-        const options = ['Take Attendance', 'Provide Marks'];
-
-        const [open, setOpen] = React.useState(false);
-        const anchorRef = React.useRef(null);
-        const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-        const handleClick = () => {
-            console.info(`You clicked ${options[selectedIndex]}`);
-            if (selectedIndex === 0) {
-                handleAttendance();
-            } else if (selectedIndex === 1) {
-                handleMarks();
-            }
-        };
-
-        const handleAttendance = () => {
-            navigate(`/Teacher/class/student/attendance/${row.id}/${subjectID}`)
-        }
-        const handleMarks = () => {
-            navigate(`/Teacher/class/student/marks/${row.id}/${subjectID}`)
-        };
-
-        const handleMenuItemClick = (event, index) => {
-            setSelectedIndex(index);
-            setOpen(false);
-        };
-
-        const handleToggle = () => {
-            setOpen((prevOpen) => !prevOpen);
-        };
-
-        const handleClose = (event) => {
-            if (anchorRef.current && anchorRef.current.contains(event.target)) {
-                return;
-            }
-
-            setOpen(false);
-        };
-        return (
-            <>
-                <BlueButton
-                    variant="contained"
-                    onClick={() =>
-                        navigate("/Teacher/class/student/" + row.id)
-                    }
-                >
-                    View
-                </BlueButton>
-                <React.Fragment>
-                    <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-                        <Button onClick={handleClick}>{options[selectedIndex]}</Button>
-                        <BlackButton
-                            size="small"
-                            aria-controls={open ? 'split-button-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-label="select merge strategy"
-                            aria-haspopup="menu"
-                            onClick={handleToggle}
-                        >
-                            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </BlackButton>
-                    </ButtonGroup>
-                    <Popper
-                        sx={{
-                            zIndex: 1,
-                        }}
-                        open={open}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        transition
-                        disablePortal
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                style={{
-                                    transformOrigin:
-                                        placement === 'bottom' ? 'center top' : 'center bottom',
-                                }}
-                            >
-                                <Paper>
-                                    <ClickAwayListener onClickAway={handleClose}>
-                                        <MenuList id="split-button-menu" autoFocusItem>
-                                            {options.map((option, index) => (
-                                                <MenuItem
-                                                    key={option}
-                                                    disabled={index === 2}
-                                                    selected={index === selectedIndex}
-                                                    onClick={(event) => handleMenuItemClick(event, index)}
-                                                >
-                                                    {option}
-                                                </MenuItem>
-                                            ))}
-                                        </MenuList>
-                                    </ClickAwayListener>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
-                </React.Fragment>
-            </>
-        );
+  const studentRows = sclassStudents.map((student) => {
+    console.log("Student Data:", student); // Debugging log
+    return {
+      name: student.name,
+      rollNum: student.rollNum,
+      contactNumber: student.contactNumber,
+      schoolYear: student.schoolYear,
+      id: student._id,
     };
+  });
 
+  const StudentsButtonHaver = ({ row }) => {
     return (
-        <>
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <>
-                    <Typography variant="h4" align="center" gutterBottom>
-                        Class Details
-                    </Typography>
-                    {getresponse ? (
-                        <>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-                                No Students Found
-                            </Box>
-                        </>
-                    ) : (
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                            <Typography variant="h5" gutterBottom>
-                                Students List:
-                            </Typography>
-
-                            {Array.isArray(sclassStudents) && sclassStudents.length > 0 &&
-                                <TableTemplate buttonHaver={StudentsButtonHaver} columns={studentColumns} rows={studentRows} />
-                            }
-                        </Paper>
-                    )}
-                </>
-            )}
-        </>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <StyledButton
+          variant="contained"
+          onClick={() => navigate("/Teacher/class/student/" + row.id)}
+        >
+          View
+        </StyledButton>
+      </Box>
     );
+  };
+
+  const teachSclass = currentUser.teachSclass
+    ? currentUser.teachSclass.sclassName
+    : "Unknown Class";
+
+  return (
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          {getresponse ? (
+            <CenteredBox>No Students Found</CenteredBox>
+          ) : (
+            <Container>
+              <Typography
+                variant="h4"
+                align="left"
+                gutterBottom
+                sx={{ fontWeight: "bold", marginTop: "50px" }}
+              >
+                {teachSclass}
+              </Typography>
+              <Box
+                sx={{
+                  borderBottom: "3px solid #ff8c0f",
+                  marginTop: "5px",
+                  marginBottom: "20px",
+                }}
+              />
+              <StyledPaper>
+                {Array.isArray(sclassStudents) && sclassStudents.length > 0 && (
+                  <TableContainer component={Paper}>
+                    <StyledTable>
+                      <TableHead>
+                        <TableRow>
+                          {studentColumns.map((column) => (
+                            <StyledTableCellHeader
+                              key={column.id}
+                              sx={{
+                                borderBottom: "1.5px solid #000",
+                                borderRight: "1.5px solid #000",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {column.label}
+                            </StyledTableCellHeader>
+                          ))}
+                          <StyledTableCellHeader
+                            sx={{
+                              borderBottom: "1.5px solid #000",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Action
+                          </StyledTableCellHeader>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {studentRows.map((row, index) => (
+                          <StyledTableRow
+                            key={row.id}
+                            index={index}
+                            length={studentRows.length}
+                          >
+                            {studentColumns.map((column) => {
+                              const value = row[column.id];
+                              console.log(`Value for ${column.id}:`, value); // Debugging log
+                              return (
+                                <StyledTableCell key={column.id}>
+                                  {value}
+                                </StyledTableCell>
+                              );
+                            })}
+                            <StyledTableCell>
+                              <StudentsButtonHaver row={row} />
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        ))}
+                      </TableBody>
+                    </StyledTable>
+                  </TableContainer>
+                )}
+              </StyledPaper>
+            </Container>
+          )}
+        </>
+      )}
+    </>
+  );
 };
 
 export default TeacherClassDetails;
+
+const StyledPaper = styled(Paper)`
+  width: 100%;
+  overflow: hidden;
+  margin-top: 20px;
+`;
+
+const CenteredBox = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const StyledTable = styled(Table)`
+  min-width: 650px;
+`;
+
+const StyledTableCellHeader = styled(TableCell)`
+  background-color: #ded2c6;
+  font-weight: bold;
+  padding: 16px;
+  border-bottom: 2px solid #000;
+  border-right: 1.5px solid #000;
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+const StyledTableCell = styled(TableCell)`
+  font-weight: bold;
+  padding: 16px;
+  border-bottom: 2px solid #000;
+  border-right: 1.5px solid #000;
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+const StyledTableRow = styled(TableRow)`
+  background-color: ${({ index, length }) =>
+    index === 0 || index === length - 1 ? "#FFEDDA" : "#ffffff"};
+
+  &:nth-of-type(odd) {
+    background-color: ${({ index, length }) =>
+      index === 0 || index === length - 1 ? "#FFEDDA" : "#f9f9f9"};
+  }
+
+  &:nth-of-type(even) {
+    background-color: ${({ index, length }) =>
+      index === 0 || index === length - 1 ? "#FFEDDA" : "#ffffff"};
+  }
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    background-color: #cdb49a !important;
+    color: #ffffff !important;
+    &:hover {
+      background-color: #ff8c0f !important;
+    }
+  }
+`;

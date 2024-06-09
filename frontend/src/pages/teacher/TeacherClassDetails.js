@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getClassStudents } from "../../redux/sclassRelated/sclassHandle";
 import { Paper, Box } from "@mui/material";
 import TableTemplate from "../../components/TableTemplate";
 import { BeigeButton } from "../../components/buttonStyles";
+
 const TeacherClassDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -15,7 +15,6 @@ const TeacherClassDetails = () => {
 
   const { currentUser } = useSelector((state) => state.user);
   const classID = currentUser.teachSclass?._id;
-  const subjectID = currentUser.teachSubject?._id;
 
   useEffect(() => {
     dispatch(getClassStudents(classID));
@@ -44,23 +43,21 @@ const TeacherClassDetails = () => {
 
   const StudentsButtonHaver = ({ row }) => {
     return (
-      <>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-          }}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <BeigeButton
+          variant="contained"
+          onClick={() => navigate("/Teacher/class/student/" + row.id)}
         >
-          <BeigeButton
-            variant="contained"
-            onClick={() => navigate("/Teacher/class/student/" + row.id)}
-          >
-            View
-          </BeigeButton>
-        </Box>
-      </>
+          View
+        </BeigeButton>
+      </Box>
     );
   };
 
@@ -71,19 +68,17 @@ const TeacherClassDetails = () => {
       ) : (
         <>
           {getresponse ? (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                  marginTop: "20px",
-                }}
-              >
-                No Students Found
-              </Box>
-            </>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                marginTop: "20px",
+              }}
+            >
+              No Students Found
+            </Box>
           ) : (
             <Paper sx={{ width: "100%", overflow: "hidden" }}>
               {Array.isArray(sclassStudents) && sclassStudents.length > 0 && (

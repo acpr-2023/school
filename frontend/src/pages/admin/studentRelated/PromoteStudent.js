@@ -2,14 +2,24 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllStudents } from "../../../redux/studentRelated/studentHandle";
-import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
-import { Paper, Box, Select, FormControl, InputLabel, MenuItem, Button } from "@mui/material";
+import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
+import {
+  Paper,
+  Box,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Button,
+} from "@mui/material";
 import TableTemplate from "../../../components/TableTemplate";
 
 const PromoteStudent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { studentsList, loading, error } = useSelector((state) => state.student);
+  const { studentsList, loading, error } = useSelector(
+    (state) => state.student
+  );
   const { currentUser } = useSelector((state) => state.user);
   const { sclassesList } = useSelector((state) => state.sclass);
 
@@ -34,11 +44,10 @@ const PromoteStudent = () => {
   const handleClassChange = (event) => {
     const selectedClassName = event.target.value;
     setClassName(selectedClassName);
-    const selectedClass = sclassesList.find(
-      (classItem) => classItem.sclassName === selectedClassName
-    );
-    const filteredStudents = studentsList.filter(student => 
-      student.sclassName.sclassName === selectedClassName && student.schoolYear === selectedSchoolYear
+    const filteredStudents = studentsList.filter(
+      (student) =>
+        student.sclassName.sclassName === selectedClassName &&
+        student.schoolYear === selectedSchoolYear
     );
     setStudentsToPromote(filteredStudents);
   };
@@ -46,12 +55,17 @@ const PromoteStudent = () => {
   const studentColumns = [
     { id: "name", label: "Student Name", minWidth: 170 },
     { id: "rollNum", label: "Student Number", minWidth: 100 },
+    { id: "className", label: "Class Name", minWidth: 100 },
+    { id: "schoolYear", label: "School Year", minWidth: 100 },
     {
       id: "promote",
       label: "Promote",
       minWidth: 100,
       renderCell: (row) => (
-        <input type="checkbox" checked={studentsToPromote.some((s) => s._id === row.id)} />
+        <input
+          type="checkbox"
+          checked={studentsToPromote.some((s) => s._id === row.id)}
+        />
       ),
     },
   ];
@@ -59,6 +73,8 @@ const PromoteStudent = () => {
   const studentRows = studentsToPromote.map((student) => ({
     name: student.name,
     rollNum: student.rollNum,
+    className: student.sclassName.sclassName,
+    schoolYear: student.schoolYear,
     id: student._id,
   }));
 
@@ -112,9 +128,25 @@ const PromoteStudent = () => {
             </FormControl>
           </Box>
           {Array.isArray(studentsList) && studentsList.length > 0 && (
-            <TableTemplate columns={studentColumns} rows={studentRows} />
+            <TableTemplate
+              columns={studentColumns}
+              rows={studentRows}
+              buttonHaver={({ row }) => (
+                <input
+                  type="checkbox"
+                  checked={studentsToPromote.some((s) => s._id === row.id)}
+                  onChange={() => {
+                    // Logic to handle checkbox change
+                  }}
+                />
+              )}
+            />
           )}
-          <Button variant="contained" sx={{ mt: 2 }} onClick={handlePromoteStudents}>
+          <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={handlePromoteStudents}
+          >
             Promote Students
           </Button>
         </Box>

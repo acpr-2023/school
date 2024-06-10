@@ -75,7 +75,7 @@ const ShowStudents = () => {
     };
 
     return (
-      <>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <IconButton onClick={() => deleteHandler(row.id, "Student")}>
           <PersonRemoveIcon color="error" />
         </IconButton>
@@ -93,7 +93,7 @@ const ShowStudents = () => {
         >
           Promote
         </Button>
-      </>
+      </Box>
     );
   };
 
@@ -170,9 +170,11 @@ const ShowStudents = () => {
                             </TableCell>
                           ))}
                           <TableCell
+                            align="center"
                             sx={{
                               fontWeight: "bold",
                               borderBottom: "2px solid #000", // Line thickness
+                              width: "400px", // Set the width for the actions column
                             }}
                           >
                             Actions

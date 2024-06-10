@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Box, Menu, MenuItem, ListItemIcon, Tooltip, Typography, Avatar, Paper } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Menu, MenuItem, ListItemIcon, Tooltip, Typography, Avatar, Paper, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
@@ -59,14 +59,14 @@ const ShowClasses = () => {
     };
     return (
       <>
-        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <BoxContainer>
           <Tooltip title="Add Students & Subjects">
             <BlueButton variant="contained" onClick={handleClick}>
               Add
               <SpeedDialIcon />
             </BlueButton>
           </Tooltip>
-        </Box>
+        </BoxContainer>
         <Menu
           anchorEl={anchorEl}
           id="account-menu"
@@ -102,38 +102,63 @@ const ShowClasses = () => {
 
   return (
     <>
-      {loading ?
-        <div>Loading...</div>
-        :
-        <>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-            <StyledTypography variant="h5">All Sections</StyledTypography>
-
-            {getresponse &&
-              <GreenButton variant="contained" onClick={() => navigate("/Admin/addclass")}>
+      <Box sx={{ padding: "120px", paddingTop: "50px", position: "relative" }}>
+        <Typography
+          variant="h4"
+          align="left"
+          gutterBottom
+          sx={{ fontWeight: "bold", marginBottom: "10px" }}
+        >
+          All Sections
+        </Typography>
+        <Box
+          sx={{
+            height: "3px",
+            backgroundColor: "#ff8c0f",
+            marginBottom: "20px",
+          }}
+        />
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "16px",
+              }}
+            >
+              <GreenButton
+                variant="contained"
+                sx={{ backgroundColor: "#FFEDDA", borderBottom: "1.5px solid #000" }}
+                onClick={() => navigate("/Admin/addclass")}
+              >
                 Add Class
               </GreenButton>
-            }
-          </Box>
-          <Box sx={{ marginTop: '16px' }}>
-            {Array.isArray(sclassesList) && sclassesList.length > 0 &&
-              <ClassContainer>
-                {sclassesList.map((sclass) => (
-                  <ClassBox key={sclass._id}>
-                    <AvatarContainer>
-                      <Avatar src={sclass.profilePhoto} />
-                    </AvatarContainer>
-                    <Typography variant="h5">{sclass.sclassName}</Typography>
-                    <Typography variant="body1">{sclass.schoolYear}</Typography>
-                    <SclassButtonHaver row={{ id: sclass._id }} />
-                  </ClassBox>
-                ))}
-              </ClassContainer>
-            }
-            <SpeedDialTemplate actions={actions} />
-          </Box>
-        </>
-      }
+            </Box>
+            <Box sx={{ marginTop: '16px' }}>
+              {Array.isArray(sclassesList) && sclassesList.length > 0 && (
+                <ClassContainer>
+                  {sclassesList.map((sclass) => (
+                    <ClassBox key={sclass._id}>
+                      <AvatarContainer>
+                        <Avatar src={sclass.profilePhoto} />
+                      </AvatarContainer>
+                      <Typography variant="h5">{sclass.sclassName}</Typography>
+                      <Typography variant="body1">{sclass.schoolYear}</Typography>
+                      <SclassButtonHaver row={{ id: sclass._id }} />
+                    </ClassBox>
+                  ))}
+                </ClassContainer>
+              )}
+              <SpeedDialTemplate actions={actions} />
+            </Box>
+          </>
+        )}
+      </Box>
       <Popup setShowPopup={setShowPopup} showPopup={showPopup} />
     </>
   );
@@ -163,6 +188,12 @@ const ButtonContainer = styled.div`
   justify-content: center;
   gap: 1rem;
   margin-top: 10px;
+`;
+
+const BoxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ClassContainer = styled.div`
@@ -202,11 +233,4 @@ const AvatarContainer = styled.div`
     width: 120px;
     height: 120px;
   }
-`;
-
-const StyledTypography = styled(Typography)`
-  font-weight: 600;
-  margin-top: 25px;
-  margin-bottom: 16px;
-  margin-left: 25px;
 `;

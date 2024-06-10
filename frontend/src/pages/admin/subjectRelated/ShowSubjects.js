@@ -105,39 +105,51 @@ const ShowSubjects = () => {
 
     return (
         <>
-            <StyledPaper>
-                <Box p={3}>
-                    <StyledTypography variant="h5">Subjects List</StyledTypography>
-                    {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-                            <CircularProgress />
-                        </Box>
+            <Box sx={{ padding: "120px", paddingTop: "50px", position: "relative" }}>
+                <Typography
+                    variant="h4"
+                    align="left"
+                    gutterBottom
+                    sx={{ fontWeight: "bold", marginBottom: "10px" }}
+                >
+                    Subjects List
+                </Typography>
+                <Box
+                    sx={{
+                        height: "3px",
+                        backgroundColor: "#ff8c0f",
+                        marginBottom: "20px",
+                    }}
+                />
+                {loading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    Array.isArray(subjectsList) && subjectsList.length > 0 ? (
+                        <Grid container spacing={2}>
+                            {subjectsList.map((subject) => (
+                                <Grid item xs={12} sm={6} key={subject._id}>
+                                    <SubjectCard 
+                                        subject={{
+                                            subName: subject.subName,
+                                            sessions: subject.sessions,
+                                            sclassName: subject.sclassName.sclassName,
+                                            sclassID: subject.sclassName._id,
+                                            id: subject._id,
+                                        }} 
+                                        onDelete={deleteHandler} 
+                                        onView={viewHandler} 
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
                     ) : (
-                        Array.isArray(subjectsList) && subjectsList.length > 0 ? (
-                            <Grid container spacing={2}>
-                                {subjectsList.map((subject) => (
-                                    <Grid item xs={12} sm={6} key={subject._id}>
-                                        <SubjectCard 
-                                            subject={{
-                                                subName: subject.subName,
-                                                sessions: subject.sessions,
-                                                sclassName: subject.sclassName.sclassName,
-                                                sclassID: subject.sclassName._id,
-                                                id: subject._id,
-                                            }} 
-                                            onDelete={deleteHandler} 
-                                            onView={viewHandler} 
-                                        />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        ) : (
-                            <Typography variant="body1">No subjects found.</Typography>
-                        )
-                    )}
-                </Box>
+                        <Typography variant="body1">No subjects found.</Typography>
+                    )
+                )}
                 <SpeedDialTemplate actions={actions} />
-            </StyledPaper>
+            </Box>
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </>
     );

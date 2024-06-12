@@ -1,57 +1,58 @@
+// studentSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const studentSlice = createSlice({
+  name: "student",
+  initialState: {
     studentsList: [],
     loading: false,
+    enrollmentSuccess: false,
     error: null,
-    response: null,
-    statestatus: "idle",
-};
-
-const studentSlice = createSlice({
-    name: 'student',
-    initialState,
-    reducers: {
-        getRequest: (state) => {
-            state.loading = true;
-        },
-        stuffDone: (state) => {
-            state.loading = false;
-            state.error = null;
-            state.response = null;
-            state.statestatus = "added";
-        },
-        getSuccess: (state, action) => {
-            state.studentsList = action.payload;
-            state.loading = false;
-            state.error = null;
-            state.response = null;
-        },
-        getFailed: (state, action) => {
-            state.response = action.payload;
-            state.loading = false;
-            state.error = null;
-        },
-        getError: (state, action) => {
-            state.loading = false;
-            state.error = action.payload;
-        },
-        underStudentControl: (state) => {
-            state.loading = false;
-            state.response = null;
-            state.error = null;
-            state.statestatus = "idle";
-        }
+  },
+  reducers: {
+    getRequest(state) {
+      state.loading = true;
     },
+    getSuccess(state, action) {
+      state.loading = false;
+      state.studentsList = action.payload;
+    },
+    getFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getError(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    stuffDone(state) {
+      state.loading = false;
+    },
+    ENROLL_STUDENTS_SUCCESS(state, action) {
+      state.loading = false;
+      state.enrollmentSuccess = true;
+      state.studentsList.push(...action.payload);
+    },
+    ENROLL_STUDENTS_FAILURE(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    underStudentControl(state) {
+      state.loading = false;
+      // Your logic here
+    },
+  },
 });
 
 export const {
-    getRequest,
-    getSuccess,
-    getFailed,
-    getError,
-    underStudentControl,
-    stuffDone,
+  getRequest,
+  getSuccess,
+  getFailed,
+  getError,
+  stuffDone,
+  ENROLL_STUDENTS_SUCCESS,
+  ENROLL_STUDENTS_FAILURE,
+  underStudentControl,
 } = studentSlice.actions;
 
-export const studentReducer = studentSlice.reducer;
+export default studentSlice.reducer; // Ensure the default export is the reducer

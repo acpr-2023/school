@@ -16,6 +16,15 @@ import {
   Card,
   CardContent,
   Grid,
+  Button,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  BottomNavigation,
+  BottomNavigationAction,
 } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -32,6 +41,183 @@ import SpeedDialTemplate from "../../../components/SpeedDialTemplate";
 import Popup from "../../../components/Popup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PostAddIcon from "@mui/icons-material/PostAdd";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
+import InsertChartIcon from "@mui/icons-material/InsertChart";
+import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
+
+const buttonStyle = {
+  backgroundColor: "#CDB49A",
+  "&:hover": {
+    backgroundColor: "#ff8c0f",
+  },
+  color: "#ffffff",
+};
+
+const StudentsMarksButtonHaver = ({ row, subjectID }) => {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <Button
+        variant="contained"
+        sx={{ ...buttonStyle, marginRight: "8px" }}
+        onClick={() => navigate("/Admin/students/student/" + row.id)}
+      >
+        View
+      </Button>
+      <Button
+        variant="contained"
+        sx={buttonStyle}
+        onClick={() =>
+          navigate(`/Admin/subject/student/marks/${row.id}/${subjectID}`)
+        }
+      >
+        Provide Marks
+      </Button>
+    </>
+  );
+};
+
+const ClassStudentsSection = ({
+  subjectID,
+  sclassStudents,
+  deleteHandler,
+  selectedSection,
+  handleSectionChange,
+}) => {
+  const studentColumns = [
+    { id: "rollNum", label: "Roll No.", minWidth: 100 },
+    { id: "name", label: "Name", minWidth: 170 },
+  ];
+
+  const studentRows = sclassStudents.map((student) => ({
+    rollNum: student.rollNum,
+    name: student.name,
+    id: student._id,
+  }));
+
+  const StudentsAttendanceButtonHaver = ({ row }) => {
+    const navigate = useNavigate();
+
+    return (
+      <>
+        <IconButton onClick={() => deleteHandler(row.id, "Student")}>
+          <PersonRemoveIcon color="error" />
+        </IconButton>
+        <Button
+          variant="contained"
+          sx={{ ...buttonStyle, marginRight: "8px", fontWeight: "bold", color: "#000000" }}
+          onClick={() => navigate("/Admin/students/student/" + row.id)}
+        >
+          View
+        </Button>
+      </>
+    );
+  };
+
+  return (
+    <Box sx={{ padding: "120px", paddingTop: "50px", position: "relative" }}>
+      <Typography
+        variant="h3"
+        align="left"
+        gutterBottom
+        sx={{ marginBottom: "10px" }}
+      >
+        Students List
+      </Typography>
+      <Box sx={{ height: "3px", backgroundColor: "#ff8c0f", marginBottom: "20px" }} />
+      <Paper sx={{ width: "100%", overflow: "hidden", marginTop: 2 }}>
+        {Array.isArray(sclassStudents) && sclassStudents.length > 0 && (
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: "#ded2c6" }}>
+                {studentColumns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    sx={{
+                      fontWeight: "bold",
+                      borderBottom: "2px solid #000",
+                      borderRight: "1.5px solid #000",
+                    }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    borderBottom: "2px solid #000",
+                    width: "300px", // Set the width for the actions column
+                  }}
+                >
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {studentRows.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  style={{
+                    backgroundColor: index % 2 === 0 ? "#fbe9e7" : "#ffffff", // Alternating row colors
+                  }}
+                >
+                  {studentColumns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell
+                        key={column.id}
+                        sx={{
+                          backgroundColor: "#FFEDDA",
+                          borderBottom: "1.5px solid #000",
+                          borderRight: "1.5px solid #000",
+                        }}
+                      >
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#FFEDDA",
+                      borderBottom: "1.5px solid #000",
+                      textAlign: "center", // Center align the content
+                    }}
+                  >
+                    {selectedSection === "attendance" ? (
+                      <StudentsAttendanceButtonHaver row={row} />
+                    ) : (
+                      <StudentsMarksButtonHaver row={row} subjectID={subjectID} />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </Paper>
+      <BottomNavigation
+        value={selectedSection}
+        onChange={handleSectionChange}
+        showLabels
+        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+      >
+        <BottomNavigationAction
+          label="Attendance"
+          value="attendance"
+          icon={selectedSection === "attendance" ? <TableChartIcon /> : <TableChartOutlinedIcon />}
+        />
+        <BottomNavigationAction
+          label="Marks"
+          value="marks"
+          icon={selectedSection === "marks" ? <InsertChartIcon /> : <InsertChartOutlinedIcon />}
+        />
+      </BottomNavigation>
+    </Box>
+  );
+};
 
 const ClassDetails = () => {
   const params = useParams();
@@ -48,6 +234,7 @@ const ClassDetails = () => {
   } = useSelector((state) => state.sclass);
 
   const classID = params.id;
+  const subjectID = "yourSubjectID"; // Replace this with actual logic to get the subject ID
 
   useEffect(() => {
     dispatch(getClassDetails(classID, "Sclass"));
@@ -60,9 +247,13 @@ const ClassDetails = () => {
   }
 
   const [value, setValue] = useState("1");
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const [selectedSection, setSelectedSection] = useState("attendance");
+  const handleSectionChange = (event, newSection) => {
+    setSelectedSection(newSection);
   };
 
   const [showPopup, setShowPopup] = useState(false);
@@ -158,94 +349,6 @@ const ClassDetails = () => {
     );
   };
 
-  const studentColumns = [
-    { id: "name", label: "Name", minWidth: 170 },
-    { id: "rollNum", label: "Student Number", minWidth: 100 },
-  ];
-
-  const studentRows = sclassStudents.map((student) => {
-    return {
-      name: student.name,
-      rollNum: student.rollNum,
-      id: student._id,
-    };
-  });
-
-  const StudentsButtonHaver = ({ row }) => {
-    return (
-      <>
-        <IconButton onClick={() => deleteHandler(row.id, "Student")}>
-          <PersonRemoveIcon color="error" />
-        </IconButton>
-        <BlueButton
-          variant="contained"
-          onClick={() => navigate("/Admin/students/student/" + row.id)}
-        >
-          View
-        </BlueButton>
-        <PurpleButton
-          variant="contained"
-          onClick={() =>
-            navigate("/Admin/students/student/attendance/" + row.id)
-          }
-        >
-          Attendance
-        </PurpleButton>
-      </>
-    );
-  };
-
-  const studentActions = [
-    {
-      icon: <PersonAddAlt1Icon color="primary" />,
-      name: "Add New Student",
-      action: () => navigate("/Admin/class/addstudents/" + classID),
-    },
-    {
-      icon: <PersonRemoveIcon color="error" />,
-      name: "Delete All Students",
-      action: () => deleteHandler(classID, "StudentsClass"),
-    },
-  ];
-
-  const ClassStudentsSection = () => {
-    return (
-      <>
-        {getresponse ? (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "16px",
-              }}
-            >
-              <GreenButton
-                variant="contained"
-                onClick={() => navigate("/Admin/class/addstudents/" + classID)}
-              >
-                Add Students
-              </GreenButton>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Typography variant="h5" gutterBottom>
-              Students List:
-            </Typography>
-
-            <TableTemplate
-              buttonHaver={StudentsButtonHaver}
-              columns={studentColumns}
-              rows={studentRows}
-            />
-            <SpeedDialTemplate actions={studentActions} />
-          </>
-        )}
-      </>
-    );
-  };
-
   const ClassTeachersSection = () => {
     return <Typography variant="h5">Teachers</Typography>;
   };
@@ -253,7 +356,7 @@ const ClassDetails = () => {
   const ClassDetailsSection = () => {
     const numberOfSubjects = subjectsList.length;
     const numberOfStudents = sclassStudents.length;
-  
+
     return (
       <Card sx={{ marginTop: 4 }}>
         <CardContent>
@@ -302,7 +405,6 @@ const ClassDetails = () => {
       </Card>
     );
   };
-  
 
   return (
     <>
@@ -344,7 +446,13 @@ const ClassDetails = () => {
                 <ClassSubjectsSection />
               </TabPanel>
               <TabPanel value="3">
-                <ClassStudentsSection />
+                <ClassStudentsSection
+                  subjectID={subjectID}
+                  sclassStudents={sclassStudents}
+                  deleteHandler={deleteHandler}
+                  selectedSection={selectedSection}
+                  handleSectionChange={handleSectionChange}
+                />
               </TabPanel>
               <TabPanel value="4">
                 <ClassTeachersSection />

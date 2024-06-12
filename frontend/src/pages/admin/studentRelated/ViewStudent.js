@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUserDetails, updateUser } from '../../../redux/userRelated/userHandle';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom';
 import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
-import { Box, Button, Collapse, IconButton, Table, TableBody, TableHead, TableRow, TableCell, Typography, Tab, Paper, BottomNavigation, BottomNavigationAction, Container, TableContainer } from '@mui/material'; // Added TableContainer here
+import { Avatar, Box, Button, Container, Paper, Divider, Grid, Table, TableBody, TableHead, TableRow, TableCell, Typography, Tab, BottomNavigation, BottomNavigationAction, TableContainer } from '@mui/material'; // Updated import statement
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { KeyboardArrowUp, KeyboardArrowDown, Delete as DeleteIcon } from '@mui/icons-material';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material'; // Removed unused import
 import { removeStuff, updateStudentFields } from '../../../redux/studentRelated/studentHandle';
 import { calculateOverallAttendancePercentage, calculateSubjectAttendancePercentage, groupAttendanceBySubject } from '../../../components/attendanceCalculator';
-import CustomBarChart from '../../../components/CustomBarChart'
-import CustomPieChart from '../../../components/CustomPieChart'
-import { StyledTableCell, StyledTableRow } from '../../../components/styles';
+import CustomBarChart from '../../../components/CustomBarChart';
+import { styled } from '@mui/system';
 
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import Popup from '../../../components/Popup';
+import { Collapse } from '@mui/material';
+
+
 
 
 const ViewStudent = () => {
@@ -242,19 +244,17 @@ const ViewStudent = () => {
                                                     <Button
                                                         variant="contained"
                                                         onClick={() => handleOpen(subId)}
-                                                        sx={{ marginRight: "8px" }}
+                                                        sx={{ 
+                                                            marginRight: "8px",
+                                                            fontWeight: 'bold',
+                                                            color: "#000000",
+                                                            backgroundColor: "#CDB49A",
+                                                            "&:hover": {
+                                                                backgroundColor: "#ff8c0f",
+                                                            },
+                                                        }}
                                                     >
                                                         {openStates[subId] ? <KeyboardArrowUp /> : <KeyboardArrowDown />} Details
-                                                    </Button>
-                                                    <IconButton onClick={() => removeSubAttendance(subId)}>
-                                                        <DeleteIcon color="error" />
-                                                    </IconButton>
-                                                    <Button
-                                                        variant="contained"
-                                                        sx={{ marginLeft: "8px", backgroundColor: "#6A1B9A", color: "#FFF" }}
-                                                        onClick={() => navigate(`/Admin/subject/student/attendance/${studentID}/${subId}`)}
-                                                    >
-                                                        Change
                                                     </Button>
                                                 </TableCell>
                                             </TableRow>
@@ -301,23 +301,6 @@ const ViewStudent = () => {
                         <Typography variant="h6" component="div">
                             Overall Attendance Percentage: {overallAttendancePercentage.toFixed(2)}%
                         </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-                        <Button
-                            variant="contained"
-                            color="error"
-                            startIcon={<DeleteIcon />}
-                            onClick={() => removeHandler(studentID, "RemoveStudentAtten")}
-                        >
-                            Delete All
-                        </Button>
-                        <Button
-                            variant="contained"
-                            sx={{ backgroundColor: "#388E3C", color: "#FFF" }}
-                            onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}
-                        >
-                            Add Attendance
-                        </Button>
                     </Box>
                 </Container>
             )
@@ -366,6 +349,8 @@ const ViewStudent = () => {
             </>
         )
     }
+    
+    
     
 
     const StudentMarksSection = () => {
@@ -455,9 +440,6 @@ const ViewStudent = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
-                        Add Marks
-                    </Button>
                 </Container>
             );
         };
@@ -494,72 +476,73 @@ const ViewStudent = () => {
                         </Paper>
                     </>
                     :
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
-                        Add Marks
-                    </Button>
+                    null
                 }
             </>
         );
     };
     
     
+    
 
     const StudentDetailsSection = () => {
+        const navigate = useNavigate();
+        const { userDetails } = useSelector((state) => state.user);
+    
+        // Check if userDetails is defined before accessing its nested properties
+        const studentName = userDetails?.name;
+        const rollNum = userDetails?.rollNum;
+        const className = userDetails?.sclassName?.sclassName;
+        const schoolName = userDetails?.school?.schoolName;
+    
         return (
-            <div>
-                Name: {userDetails.name}
-                <br />
-                Student Number: {userDetails.rollNum}
-                <br />
-                Class: {sclassName.sclassName}
-                <br />
-                School: {studentSchool.schoolName}
-                {
-                    subjectAttendance && Array.isArray(subjectAttendance) && subjectAttendance.length > 0 && (
-                        <CustomPieChart data={chartData} />
-                    )
-                }
-                <Button variant="contained" sx={styles.styledButton} onClick={deleteHandler}>
-                    Delete
-                </Button>
-                <br />
-                {/* <Button variant="contained" sx={styles.styledButton} className="show-tab" onClick={() => { setShowTab(!showTab) }}>
-                    {
-                        showTab
-                            ? <KeyboardArrowUp />
-                            : <KeyboardArrowDown />
-                    }
-                    Edit Student
-                </Button>
-                <Collapse in={showTab} timeout="auto" unmountOnExit>
-                    <div className="register">
-                        <form className="registerForm" onSubmit={submitHandler}>
-                            <span className="registerTitle">Edit Details</span>
-                            <label>Name</label>
-                            <input className="registerInput" type="text" placeholder="Enter user's name..."
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                autoComplete="name" required />
-
-                            <label>Roll Number</label>
-                            <input className="registerInput" type="number" placeholder="Enter user's Roll Number..."
-                                value={rollNum}
-                                onChange={(event) => setRollNum(event.target.value)}
-                                required />
-
-                            <label>Password</label>
-                            <input className="registerInput" type="password" placeholder="Enter user's password..."
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                                autoComplete="new-password" />
-
-                            <button className="registerButton" type="submit" >Update</button>
-                        </form>
-                    </div>
-                </Collapse> */}
-            </div>
-        )
-    }
+            <Container maxWidth="md">
+                <StyledPaper elevation={3}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={4}>
+                            <Avatar alt="Student Avatar" sx={{ width: 150, height: 150 }}>
+                                {String(studentName).charAt(0)}
+                            </Avatar>
+                        </Grid>
+                        <Grid item xs={12} md={8}>
+                            <Typography
+                                variant="h3"
+                                component="h2"
+                                textAlign="left"
+                                sx={{ pl: 1 }}
+                            >
+                                {studentName}
+                            </Typography>
+                            <Divider
+                                sx={{ my: 1, borderBottomWidth: 3, borderColor: "#FF8C0F" }}
+                            />
+                            <Typography
+                                variant="subtitle1"
+                                component="p"
+                                textAlign="left"
+                                sx={{ mb: 1 }}
+                            >
+                                <strong>Student Number:</strong> {rollNum}
+                            </Typography>
+                            <Typography
+                                variant="subtitle1"
+                                component="p"
+                                textAlign="left"
+                                sx={{ mb: 1 }}
+                            >
+                                <strong>Class:</strong> {className}
+                            </Typography>
+                            <Typography variant="subtitle1" component="p" textAlign="left">
+                                <strong>School:</strong> {schoolName}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </StyledPaper>
+            </Container>
+        );
+    };
+    
+    
 
     return (
         <>
@@ -618,3 +601,9 @@ const styles = {
         }
     }
 }
+
+const StyledPaper = styled(Paper)`
+  padding: 50px;
+  margin-bottom: 20px;
+  margin-top: 30px; /* Add margin-top to create space at the top */
+`;

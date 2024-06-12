@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import styled from "styled-components";
 
+// Description: Component for displaying details of a teacher's class including students
+
 const TeacherClassDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -93,7 +95,7 @@ const TeacherClassDetails = () => {
                 variant="h4"
                 align="left"
                 gutterBottom
-                sx={{ fontWeight: "bold", marginTop: "50px" }}
+                sx={{ marginTop: "50px" }}
               >
                 {teachSclass}
               </Typography>
@@ -116,19 +118,13 @@ const TeacherClassDetails = () => {
                               sx={{
                                 borderBottom: "1.5px solid #000",
                                 borderRight: "1.5px solid #000",
-                                fontWeight: "bold",
                               }}
                             >
-                              {column.label}
+                              <strong>{column.label}</strong>
                             </StyledTableCellHeader>
                           ))}
-                          <StyledTableCellHeader
-                            sx={{
-                              borderBottom: "1.5px solid #000",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Action
+                          <StyledTableCellHeader sx={{ borderBottom: "1.5px solid #000", textAlign: "center" }}>
+                            <strong>Action</strong>
                           </StyledTableCellHeader>
                         </TableRow>
                       </TableHead>
@@ -188,7 +184,6 @@ const StyledTable = styled(Table)`
 
 const StyledTableCellHeader = styled(TableCell)`
   background-color: #ded2c6;
-  font-weight: bold;
   padding: 16px;
   border-bottom: 2px solid #000;
   border-right: 1.5px solid #000;
@@ -198,7 +193,6 @@ const StyledTableCellHeader = styled(TableCell)`
 `;
 
 const StyledTableCell = styled(TableCell)`
-  font-weight: bold;
   padding: 16px;
   border-bottom: 2px solid #000;
   border-right: 1.5px solid #000;
@@ -225,9 +219,11 @@ const StyledTableRow = styled(TableRow)`
 const StyledButton = styled(Button)`
   && {
     background-color: #cdb49a !important;
-    color: #ffffff !important;
+    color: #000000 !important; /* Black text */
+    font-weight: bold; /* Make text bold */
     &:hover {
       background-color: #ff8c0f !important;
     }
   }
 `;
+

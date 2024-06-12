@@ -81,14 +81,14 @@ const ShowStudents = () => {
         </IconButton>
         <Button
           variant="contained"
-          sx={{ ...buttonStyle, marginRight: "8px" }} // Apply buttonStyle here and add margin
+          sx={{ ...buttonStyle, marginRight: "8px", color: "#000000", fontWeight: "bold", }} 
           onClick={() => navigate("/Admin/students/student/" + row.id)}
         >
           View
         </Button>
         <Button
           variant="contained"
-          sx={buttonStyle} // Apply buttonStyle here
+          sx={{ ...buttonStyle, marginRight: "8px", color: "#000000", fontWeight: "bold", }} 
           onClick={handlePromote}
         >
           Promote

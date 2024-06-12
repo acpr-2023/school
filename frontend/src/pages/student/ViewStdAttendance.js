@@ -134,7 +134,7 @@ const ViewStdAttendance = () => {
                     borderRight: "1.5px solid #000",
                   }}
                 >
-                  Total Sessions
+                  Class Periods
                 </TableCell>
                 <TableCell
                   sx={{

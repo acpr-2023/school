@@ -69,17 +69,11 @@ const ViewSubject = () => {
         <>
             <Button
                 variant="contained"
-                sx={{ ...buttonStyle, marginRight: "8px" }}
+                sx={{ ...buttonStyle, marginRight: "8px", fontWeight: 'bold',
+                    color: "#000000" }}
                 onClick={() => navigate("/Admin/students/student/" + row.id)}
             >
                 View
-            </Button>
-            <Button
-                variant="contained"
-                sx={buttonStyle}
-                onClick={() => navigate(`/Admin/subject/student/attendance/${row.id}/${subjectID}`)}
-            >
-                Take Attendance
             </Button>
         </>
     );
@@ -88,7 +82,7 @@ const ViewSubject = () => {
         <>
             <Button
                 variant="contained"
-                sx={{ ...buttonStyle, marginRight: "8px" }}
+                sx={{ ...buttonStyle, marginRight: "8px"}}
                 onClick={() => navigate("/Admin/students/student/" + row.id)}
             >
                 View
@@ -131,7 +125,7 @@ const ViewSubject = () => {
                                   sx={{
                                       fontWeight: 'bold',
                                       borderBottom: '2px solid #000',
-                                      width: '400px', // Set the width for the actions column
+                                      width: '300px', // Set the width for the actions column
                                   }}
                               >
                                   Actions

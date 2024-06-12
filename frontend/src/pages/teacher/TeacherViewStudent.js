@@ -147,10 +147,11 @@ const TeacherViewStudent = () => {
                     <StyledTableRow>
                       <StyledTableCell>Subject</StyledTableCell>
                       <StyledTableCell>Present</StyledTableCell>
-                      <StyledTableCell>Total Sessions</StyledTableCell>
+                      <StyledTableCell>Class Periods</StyledTableCell>
                       <StyledTableCell>Attendance Percentage</StyledTableCell>
                       <StyledTableCell>Date</StyledTableCell>
                       <StyledTableCell>Status</StyledTableCell>
+                      <StyledTableCell align="center">Action</StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
 
@@ -185,6 +186,23 @@ const TeacherViewStudent = () => {
                                 </StyledTableCell>
                                 <StyledTableCell>{dateString}</StyledTableCell>
                                 <StyledTableCell>{data.status}</StyledTableCell>
+                                <StyledTableCell align="center">
+                                <Button
+                                  variant="contained"
+                                  sx={{ 
+                                    marginLeft: "8px", 
+                                    backgroundColor: "#CDB49A", 
+                                    color: "#000000", 
+                                    fontWeight: "bold",
+                                    "&:hover": {
+                                      backgroundColor: "#ff8c0f",
+                                    },
+                                  }}
+                                  onClick={() => navigate(`/Teacher/class/student/attendance/${studentID}/${subId}`)}
+                                >
+                                  Change
+                                </Button>
+                                </StyledTableCell>
                               </StyledTableRow>
                             );
                           });
